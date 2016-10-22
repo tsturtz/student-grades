@@ -1,16 +1,19 @@
 /**
  * Define all global variables here
  */
+
 /**
  * student_array - global array to hold student objects
  * @type {Array}
  */
-
+var students = ['Junie','Jef','Kevin','Weikuan'];
 /**
  * inputIds - id's of the elements that are used to add students
  * @type {string[]}
  */
-
+student_name = $('#studentName');
+student_course = $('#course');
+student_grade = $('#studentGrade');
 /**
  * addClicked - Event Handler when user clicks the add button
  */
@@ -52,7 +55,9 @@
  * reset - resets the application to initial state. Global variables reset, DOM get reset to initial load state
  */
 
-
 /**
  * Listen for the document to load and reset the data to the initial state
  */
+$(document).ready(function(){
+
+});
