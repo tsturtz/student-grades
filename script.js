@@ -6,16 +6,19 @@
  * student_array - global array to hold student objects
  * @type {Array}
  */
+
 var student_array = [];
+
 /**
  * inputIds - id's of the elements that are used to add students
  * @type {string[]}
  */
-studentName = $('#studentName');
-studentCourse = $('#course');
-studentGrade = $('#studentGrade');
 
-function applyClickHandlers(){
+/**
+ * applyClickHandlers - After document has loaded, add click handlers
+ */
+
+function applyClickHandlers() {
     /**
      * addClicked - Event Handler when user clicks the add button
      */
@@ -27,60 +30,87 @@ function applyClickHandlers(){
 }
 
 /**
- * addStudent - creates a student objects based on input fields in the form and adds the object to global student array
+ * addStudent - creates a student object based on input fields in the form and adds the object to global student array
  *
  * @return undefined
  */
-function addStudent(name,course,grade){
+function addStudent() {
     console.log('add student clicked');
-    var studentObject = {
-        name: studentName,
-        course: studentCourse,
-        grade: studentGrade
+    if ($('#studentName').val() == '' || $('#course').val() == '' || $('#studentGrade').val() == '') {
+        alert('please enter all information');
+    }
+    else {
+        var studentObject = {
+            name: $('#studentName').val(),
+            course: $('#course').val(),
+            grade: Number($('#studentGrade').val())
+        };
+        console.log(studentObject);
+        student_array.push(studentObject);
+        console.log(student_array);
     }
 }
 /**
  * clearAddStudentForm - clears out the form values based on inputIds variable
  */
-function clearAddStudentForm(){
+function clearAddStudentForm() {
     console.log('clear student clicked');
+    $('#studentName').val('');
+    $('#course').val('');
+    $('#studentGrade').val('');
+    console.log('cleared');
 }
 /**
  * calculateAverage - loop through the global student array and calculate average grade and return that value
  * @returns {number}
  */
-function calculateAverage(){
-
+function calculateAverage() {
+    var totalGrades = 0;
+    for (var i = 0; i < student_array.length; i++) {
+        totalGrades += student_array[i].grade;
+    }
+    console.log(totalGrades);
+    return totalGrades / student_array.length;
 }
 /**
  * updateData - centralized function to update the average and call student list update
  */
-function updateData(){
-
+function updateData() {
+    calculateAverage();
+    updateStudentList();
 }
 /**
  * updateStudentList - loops through global student array and appends each objects data into the student-list-container > list-body
  */
-function updateStudentList(){
-
+function updateStudentList() {
+    for (var i = 0; i < student_array.length; i++) {
+        $('.list-body').append('<tr>');
+        var lastStudent = student_array[i];
+        $('.list-body > tr:last').append('<td>');
+        $('.list-body tr td:last').text(lastStudent.name);
+        $('.list-body > tr:last').append('<td>');
+        $('.list-body tr td:last').text(lastStudent.course);
+        $('.list-body > tr:last').append('<td>');
+        $('.list-body tr td:last').text(lastStudent.grade);
+    }
 }
 /**
  * addStudentToDom - take in a student object, create html elements from the values and then append the elements
  * into the .student_list tbody
  * @param studentObj
  */
-function addStudentToDom(studentObj){
-
+function addStudentToDom(studentObj) {
+    // I just did that!
 }
 /**
  * reset - resets the application to initial state. Global variables reset, DOM get reset to initial load state
  */
-function reset(){
+function reset() {
 
 }
 /**
  * Listen for the document to load and reset the data to the initial state
  */
-$(document).ready(function(){
+$(document).ready(function () {
     applyClickHandlers();
 });
