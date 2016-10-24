@@ -2,6 +2,8 @@
  * Define all global variables here
  */
 
+var averageGrade = 0;
+
 /**
  * student_array - global array to hold student objects
  * @type {Array}
@@ -48,6 +50,8 @@ function addStudent() {
         console.log(studentObject);
         student_array.push(studentObject);
         console.log(student_array);
+        updateData();
+        clearAddStudentForm();
     }
 }
 /**
@@ -70,7 +74,9 @@ function calculateAverage() {
         totalGrades += student_array[i].grade;
     }
     console.log(totalGrades);
-    return totalGrades / student_array.length;
+    averageGrade = totalGrades / student_array.length;
+    $('.avgGrade').text(averageGrade);
+    return averageGrade;
 }
 /**
  * updateData - centralized function to update the average and call student list update
@@ -84,14 +90,7 @@ function updateData() {
  */
 function updateStudentList() {
     for (var i = 0; i < student_array.length; i++) {
-        $('.list-body').append('<tr>');
-        var lastStudent = student_array[i];
-        $('.list-body > tr:last').append('<td>');
-        $('.list-body tr td:last').text(lastStudent.name);
-        $('.list-body > tr:last').append('<td>');
-        $('.list-body tr td:last').text(lastStudent.course);
-        $('.list-body > tr:last').append('<td>');
-        $('.list-body tr td:last').text(lastStudent.grade);
+        addStudentToDom(student_array[i]);
     }
 }
 /**
@@ -100,13 +99,25 @@ function updateStudentList() {
  * @param studentObj
  */
 function addStudentToDom(studentObj) {
-    // I just did that!
+    $('.list-body').append('<tr>');
+    $('.list-body > tr:last').append('<td>');
+    $('.list-body tr td:last').text(studentObj.name);
+    $('.list-body > tr:last').append('<td>');
+    $('.list-body tr td:last').text(studentObj.course);
+    $('.list-body > tr:last').append('<td>');
+    $('.list-body tr td:last').text(studentObj.grade);
+    $('.list-body > tr:last').append('<button>');
+    $('.list-body tr button').addClass('btn btn-danger').text('Delete');
 }
 /**
  * reset - resets the application to initial state. Global variables reset, DOM get reset to initial load state
  */
 function reset() {
-
+    student_array = [];
+    averageGrade = 0;
+    $('.list-body').empty();
+    clearAddStudentForm();
+    $('.avgGrade').text('0');
 }
 /**
  * Listen for the document to load and reset the data to the initial state
