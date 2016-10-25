@@ -15,7 +15,7 @@ var student_array = [];
  * inputIds - id's of the elements that are used to add students
  * @type {string[]}
  */
-
+stud_vars = ['#studentName', '#course', '#studentGrade'];
 /**
  * applyClickHandlers - After document has loaded, add click handlers
  */
@@ -38,14 +38,14 @@ function applyClickHandlers() {
  */
 function addStudent() {
     console.log('add student clicked');
-    if ($('#studentName').val() == '' || $('#course').val() == '' || $('#studentGrade').val() == '') {
+    if ($(stud_vars[0]).val() == '' || $(stud_vars[1]).val() == '' || $(stud_vars[2]).val() == '') {
         alert('please enter all information');
     }
     else {
         var studentObject = {
-            name: $('#studentName').val(),
-            course: $('#course').val(),
-            grade: Number($('#studentGrade').val())
+            name: $(stud_vars[0]).val(),
+            course: $(stud_vars[1]).val(),
+            grade: Number($(stud_vars[2]).val())
         };
         console.log(studentObject);
         student_array.push(studentObject);
@@ -59,9 +59,9 @@ function addStudent() {
  */
 function clearAddStudentForm() {
     console.log('clear student clicked');
-    $('#studentName').val('');
-    $('#course').val('');
-    $('#studentGrade').val('');
+    $(stud_vars[0]).val('');
+    $(stud_vars[1]).val('');
+    $(stud_vars[2]).val('');
     console.log('cleared');
 }
 /**
@@ -89,8 +89,18 @@ function updateData() {
  * updateStudentList - loops through global student array and appends each objects data into the student-list-container > list-body
  */
 function updateStudentList() {
-    for (var i = 0; i < student_array.length; i++) {
-        addStudentToDom(student_array[i]);
+    // If empty, clear the <h2>: 'User Info Unavailable' AND do the same stuff that's in the else statement
+    if (student_array.length === 1){
+        $('.clear-after-entry').hide();
+        $('.list-body').empty(); // Empty the tbody DOM elements before re-adding everything in the student array
+        for (var i = 0; i < student_array.length; i++) {
+            addStudentToDom(student_array[i]);
+        }
+    } else {
+        $('.list-body').empty(); // Empty the tbody DOM elements before re-adding everything in the student array
+        for (var i = 0; i < student_array.length; i++) {
+            addStudentToDom(student_array[i]);
+        }
     }
 }
 /**
@@ -99,15 +109,13 @@ function updateStudentList() {
  * @param studentObj
  */
 function addStudentToDom(studentObj) {
-    $('.list-body').append('<tr>');
-    $('.list-body > tr:last').append('<td>');
-    $('.list-body tr td:last').text(studentObj.name);
-    $('.list-body > tr:last').append('<td>');
-    $('.list-body tr td:last').text(studentObj.course);
-    $('.list-body > tr:last').append('<td>');
-    $('.list-body tr td:last').text(studentObj.grade);
-    $('.list-body > tr:last').append('<button>');
-    $('.list-body tr button').addClass('btn btn-danger').text('Delete');
+    var s_row = $('<tr>');
+    var s_name = $('<td>').text(studentObj.name);
+    var s_course = $('<td>').text(studentObj.course);
+    var s_grade = $('<td>').text(studentObj.grade);
+    var s_button = $('<button>').addClass('btn btn-danger').text('Delete');
+    $('.list-body').append(s_row);
+    $('.list-body > tr:last').append(s_name).append(s_course).append(s_grade).append(s_button);
 }
 /**
  * reset - resets the application to initial state. Global variables reset, DOM get reset to initial load state
