@@ -16,7 +16,7 @@ var student_array = [];
  * @type {string[]}
  */
 
-stud_vars = ['#studentName', '#course', '#studentGrade'];
+student_vars = ['#studentName', '#course', '#studentGrade'];
 
 /**
  * applyClickHandlers - After document has loaded, add click handlers
@@ -35,8 +35,12 @@ function applyClickHandlers() {
     /**
      * deleteClicked - Event Handler when user clicks the delete button
      */
-    //$('.delete-btn').click(removeStudent);
-    $('.list-body').on('click', '.delete-btn', removeStudent);
+    $('.list-body').on('click', '.delete-btn', function () {
+        var delete_click = $(this).closest('tr'); // row in which the delete button was clicked
+        var delete_index = delete_click.index(); // index of the row item associated with the student array
+        console.log(delete_index);
+        removeStudent(delete_click, delete_index);
+    });
 }
 
 /**
@@ -46,14 +50,17 @@ function applyClickHandlers() {
  */
 function addStudent() { // TODO restrict grade input to a numeric value < 100 and > 0;
     console.log('add student clicked');
-    if ($(stud_vars[0]).val() == '' || $(stud_vars[1]).val() == '' || $(stud_vars[2]).val() == '') {
+    if ($(student_vars[0]).val() == '' || $(student_vars[1]).val() == '' || $(student_vars[2]).val() == '') {
         alert('please enter all information');
+    }
+    else if ($(student_vars[2]).val() < 0 || $(student_vars[2]).val() > 100 || isNaN($(student_vars[2]).val()) == true) {
+        alert('please enter a number between 0 and 100');
     }
     else {
         var studentObject = {
-            name: $(stud_vars[0]).val(),
-            course: $(stud_vars[1]).val(),
-            grade: Number($(stud_vars[2]).val())
+            name: $(student_vars[0]).val(),
+            course: $(student_vars[1]).val(),
+            grade: Number($(student_vars[2]).val())
         };
         console.log(studentObject);
         student_array.push(studentObject);
@@ -67,9 +74,9 @@ function addStudent() { // TODO restrict grade input to a numeric value < 100 an
  */
 function clearAddStudentForm() {
     console.log('clear student clicked');
-    $(stud_vars[0]).val('');
-    $(stud_vars[1]).val('');
-    $(stud_vars[2]).val('');
+    $(student_vars[0]).val('');
+    $(student_vars[1]).val('');
+    $(student_vars[2]).val('');
     console.log('cleared');
 }
 
@@ -77,11 +84,13 @@ function clearAddStudentForm() {
  * removeStudent - removes the student which the user has clicked the delete button
  */
 
-function removeStudent(){
-    console.log('removeStudent function called by click handler');
-    student_array.splice(this_index_in_student_array); // TODO! remove object from array
-    this.closest('tr').remove(); // remove from DOM
-
+function removeStudent(clicked, index) {
+    clicked.remove(); // remove from DOM
+    student_array.splice(index, 1); // remove from student_array
+    calculateAverage();
+    if (student_array.length === 0) {
+        $('.clear-after-entry').show();
+    }
 }
 
 /**
@@ -90,13 +99,22 @@ function removeStudent(){
  */
 function calculateAverage() {
     var totalGrades = 0;
-    for (var i = 0; i < student_array.length; i++) {
-        totalGrades += student_array[i].grade;
+    var averageGrade = 0;
+    var appendGrade = $('.avgGrade').text(averageGrade);
+    if (student_array.length === 0) {
+        averageGrade = 0;
+        $(appendGrade).text(averageGrade);
+        return averageGrade;
     }
-    console.log(totalGrades);
-    averageGrade = totalGrades / student_array.length;
-    $('.avgGrade').text(averageGrade);
-    return averageGrade;
+    else {
+        for (var i = 0; i < student_array.length; i++) {
+            totalGrades += student_array[i].grade;
+        }
+        console.log(totalGrades);
+        averageGrade = totalGrades / student_array.length;
+        $(appendGrade).text(averageGrade);
+        return averageGrade;
+    }
 }
 /**
  * updateData - centralized function to update the average and call student list update
@@ -110,7 +128,7 @@ function updateData() {
  */
 function updateStudentList() {
     // If empty, clear the <h2>: 'User Info Unavailable' AND do the same stuff that's in the else statement
-    if (student_array.length === 1){
+    if (student_array.length === 1) {
         $('.clear-after-entry').hide();
         $('.list-body').empty(); // Empty the tbody DOM elements before re-adding everything in the student array
         for (var i = 0; i < student_array.length; i++) {
