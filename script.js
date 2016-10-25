@@ -15,7 +15,9 @@ var student_array = [];
  * inputIds - id's of the elements that are used to add students
  * @type {string[]}
  */
+
 stud_vars = ['#studentName', '#course', '#studentGrade'];
+
 /**
  * applyClickHandlers - After document has loaded, add click handlers
  */
@@ -24,11 +26,17 @@ function applyClickHandlers() {
     /**
      * addClicked - Event Handler when user clicks the add button
      */
-    $('.btn-success').click(addStudent);
+    $('.add-btn').click(addStudent);
     /**
      * cancelClicked - Event Handler when user clicks the cancel button, should clear out student form
      */
-    $('.btn-default').click(clearAddStudentForm);
+    $('.cancel-btn').click(clearAddStudentForm);
+
+    /**
+     * deleteClicked - Event Handler when user clicks the delete button
+     */
+    //$('.delete-btn').click(removeStudent);
+    $('.list-body').on('click', '.delete-btn', removeStudent);
 }
 
 /**
@@ -36,7 +44,7 @@ function applyClickHandlers() {
  *
  * @return undefined
  */
-function addStudent() {
+function addStudent() { // TODO restrict grade input to a numeric value < 100 and > 0;
     console.log('add student clicked');
     if ($(stud_vars[0]).val() == '' || $(stud_vars[1]).val() == '' || $(stud_vars[2]).val() == '') {
         alert('please enter all information');
@@ -64,6 +72,18 @@ function clearAddStudentForm() {
     $(stud_vars[2]).val('');
     console.log('cleared');
 }
+
+/**
+ * removeStudent - removes the student which the user has clicked the delete button
+ */
+
+function removeStudent(){
+    console.log('removeStudent function called by click handler');
+    student_array.splice(this_index_in_student_array); // TODO! remove object from array
+    this.closest('tr').remove(); // remove from DOM
+
+}
+
 /**
  * calculateAverage - loop through the global student array and calculate average grade and return that value
  * @returns {number}
@@ -113,7 +133,7 @@ function addStudentToDom(studentObj) {
     var s_name = $('<td>').text(studentObj.name);
     var s_course = $('<td>').text(studentObj.course);
     var s_grade = $('<td>').text(studentObj.grade);
-    var s_button = $('<button>').addClass('btn btn-danger').text('Delete');
+    var s_button = $('<button>').addClass('btn btn-danger delete-btn').text('Delete');
     $('.list-body').append(s_row);
     $('.list-body > tr:last').append(s_name).append(s_course).append(s_grade).append(s_button);
 }
