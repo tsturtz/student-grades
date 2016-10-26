@@ -36,10 +36,9 @@ function applyClickHandlers() {
      * deleteClicked - Event Handler when user clicks the delete button
      */
     $('.list-body').on('click', '.delete-btn', function () {
-        var delete_click = $(this).closest('tr'); // row in which the delete button was clicked
-        var delete_index = delete_click.index(); // index of the row item associated with the student array
+        var delete_index = $(this).attr('id'); // index of the row item associated with the student array
         console.log(delete_index);
-        removeStudent(delete_click, delete_index);
+        removeStudent(delete_index);
     });
 }
 
@@ -48,7 +47,7 @@ function applyClickHandlers() {
  *
  * @return undefined
  */
-function addStudent() { // TODO restrict grade input to a numeric value < 100 and > 0;
+function addStudent() {
     console.log('add student clicked');
     if ($(student_vars[0]).val() == '' || $(student_vars[1]).val() == '' || $(student_vars[2]).val() == '') {
         alert('please enter all information');
@@ -60,7 +59,8 @@ function addStudent() { // TODO restrict grade input to a numeric value < 100 an
         var studentObject = {
             name: $(student_vars[0]).val(),
             course: $(student_vars[1]).val(),
-            grade: Number($(student_vars[2]).val())
+            grade: Number($(student_vars[2]).val()),
+            id: student_array.length
         };
         console.log(studentObject);
         student_array.push(studentObject);
@@ -84,13 +84,13 @@ function clearAddStudentForm() {
  * removeStudent - removes the student which the user has clicked the delete button
  */
 
-function removeStudent(clicked, index) {
-    clicked.remove(); // remove from DOM
+function removeStudent(index) {
     student_array.splice(index, 1); // remove from student_array
-    calculateAverage();
+    console.log(student_array);
     if (student_array.length === 0) {
         $('.clear-after-entry').show();
     }
+    updateData();
 }
 
 /**
@@ -110,7 +110,6 @@ function calculateAverage() {
         for (var i = 0; i < student_array.length; i++) {
             totalGrades += student_array[i].grade;
         }
-        console.log(totalGrades);
         averageGrade = totalGrades / student_array.length;
         $(appendGrade).text(averageGrade);
         return averageGrade;
@@ -120,8 +119,8 @@ function calculateAverage() {
  * updateData - centralized function to update the average and call student list update
  */
 function updateData() {
-    calculateAverage();
     updateStudentList();
+    calculateAverage();
 }
 /**
  * updateStudentList - loops through global student array and appends each objects data into the student-list-container > list-body
@@ -131,14 +130,11 @@ function updateStudentList() {
     if (student_array.length === 1) {
         $('.clear-after-entry').hide();
         $('.list-body').empty(); // Empty the tbody DOM elements before re-adding everything in the student array
-        for (var i = 0; i < student_array.length; i++) {
-            addStudentToDom(student_array[i]);
-        }
-    } else {
-        $('.list-body').empty(); // Empty the tbody DOM elements before re-adding everything in the student array
-        for (var i = 0; i < student_array.length; i++) {
-            addStudentToDom(student_array[i]);
-        }
+    }
+    $('.list-body').empty(); // Empty the tbody DOM elements before re-adding everything in the student array
+    for (var i = 0; i < student_array.length; i++) {
+        student_array[i].id = i;
+        addStudentToDom(student_array[i]);
     }
 }
 /**
@@ -151,7 +147,7 @@ function addStudentToDom(studentObj) {
     var s_name = $('<td>').text(studentObj.name);
     var s_course = $('<td>').text(studentObj.course);
     var s_grade = $('<td>').text(studentObj.grade);
-    var s_button = $('<button>').addClass('btn btn-danger delete-btn').text('Delete');
+    var s_button = $('<button>').addClass('btn btn-danger delete-btn').text('Delete').attr('id', studentObj.id);
     $('.list-body').append(s_row);
     $('.list-body > tr:last').append(s_name).append(s_course).append(s_grade).append(s_button);
 }
