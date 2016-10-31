@@ -31,7 +31,10 @@ function applyClickHandlers() {
      * cancelClicked - Event Handler when user clicks the cancel button, should clear out student form
      */
     $('.cancel-btn').click(clearAddStudentForm);
-
+    /**
+     * getDataClicked - Event Handler when user clicks the get server data button
+     */
+    $('.getdata-btn').click(getServerData);
     /**
      * deleteClicked - Event Handler when user clicks the delete button
      */
@@ -91,6 +94,36 @@ function removeStudent(index) {
         $('.clear-after-entry').show();
     }
     updateData();
+}
+
+/**
+ * getServerData - get and parse data from server
+ */
+
+function getServerData() {
+    console.log('getserverdata clicked');
+    var data_object = {
+        api_key: 'BmjoMo3MLu'
+    };
+    $.ajax({
+        data: data_object,
+        dataType: 'json',
+        method: 'post',
+        url: 'https://s-apis.learningfuze.com/sgt/get',
+        success: function(response){
+            console.log('response received');
+            var studentObject = {
+                name: ,
+                course: ,
+                grade: ,
+                id: student_array.length
+            };
+            student_array.push(studentObject);
+            console.log(student_array);
+            updateData();
+            clearAddStudentForm();
+        }
+    });
 }
 
 /**
