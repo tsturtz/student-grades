@@ -110,18 +110,22 @@ function getServerData() {
         dataType: 'json',
         method: 'post',
         url: 'https://s-apis.learningfuze.com/sgt/get',
-        success: function(response){
-            console.log('response received');
-            var studentObject = {
-                name: ,
-                course: ,
-                grade: ,
-                id: student_array.length
-            };
-            student_array.push(studentObject);
-            console.log(student_array);
-            updateData();
-            clearAddStudentForm();
+        success: function (response) {
+            console.log('response received: ', response);
+            var responseData = response.data;
+            console.log(responseData);
+            for (var i = 0; i < responseData.length; i++) {
+                var studentObject = {
+                    name: responseData[i].name,
+                    course: responseData[i].course,
+                    grade: responseData[i].grade,
+                    id: student_array.length
+                };
+                student_array.push(studentObject);
+                console.log(student_array);
+                updateData();
+                clearAddStudentForm();
+            }
         }
     });
 }
@@ -136,16 +140,16 @@ function calculateAverage() {
     var appendGrade = $('.avgGrade').text(averageGrade);
     if (student_array.length === 0) {
         averageGrade = 0;
-        $(appendGrade).text(averageGrade);
-        return averageGrade;
+        $(appendGrade).text(averageGrade.toFixed(2));
+        return averageGrade.toFixed(2);
     }
     else {
         for (var i = 0; i < student_array.length; i++) {
             totalGrades += student_array[i].grade;
         }
         averageGrade = totalGrades / student_array.length;
-        $(appendGrade).text(averageGrade);
-        return averageGrade;
+        $(appendGrade).text(averageGrade.toFixed(2));
+        return averageGrade.toFixed(2);
     }
 }
 /**
