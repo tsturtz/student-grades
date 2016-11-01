@@ -39,9 +39,9 @@ function applyClickHandlers() {
      * deleteClicked - Event Handler when user clicks the delete button
      */
     $('.list-body').on('click', '.delete-btn', function () {
-        var delete_index = $(this).attr('id'); // index of the row item associated with the student array
-        console.log(delete_index);
-        removeStudent(delete_index);
+        var delete_id = $(this).attr('id'); // index of the row item associated with the student array
+        console.log(delete_id);
+        removeStudent(delete_id);
     });
 }
 
@@ -51,30 +51,38 @@ function applyClickHandlers() {
  * @return undefined
  */
 function addStudent() {
-    var data_object = {
-        api_key: 'BmjoMo3MLu',
-        name: $(student_vars[0]).val(),
-        course: $(student_vars[1]).val(),
-        grade: ($(student_vars[2]).val())
-    };
-    $.ajax({
-        data: data_object,
-        dataType: 'json',
-        method: 'post',
-        url: 'https://s-apis.learningfuze.com/sgt/create',
-        success: function (response) {
-            var studentObject = {
-                name: $(student_vars[0]).val(),
-                course: $(student_vars[1]).val(),
-                grade: ($(student_vars[2]).val()),
-                id: response.new_id
-            };
-            student_array.push(studentObject);
-            console.log(student_array);
-            updateData();
-            clearAddStudentForm();
-        }
-    });
+    if ($(student_vars[0]).val() == '' || $(student_vars[1]).val() == '' || $(student_vars[2]).val() == '') {
+    alert('please enter all information');
+    }
+    else if ($(student_vars[2]).val() < 0 || $(student_vars[2]).val() > 100 || isNaN($(student_vars[2]).val()) == true) {
+    alert('please enter a number between 0 and 100');
+    }
+    else {
+        var data_object = {
+            api_key: 'BmjoMo3MLu',
+            name: $(student_vars[0]).val(),
+            course: $(student_vars[1]).val(),
+            grade: ($(student_vars[2]).val())
+        };
+        $.ajax({
+            data: data_object,
+            dataType: 'json',
+            method: 'post',
+            url: 'https://s-apis.learningfuze.com/sgt/create',
+            success: function (response) {
+                var studentObject = {
+                    name: $(student_vars[0]).val(),
+                    course: $(student_vars[1]).val(),
+                    grade: ($(student_vars[2]).val()),
+                    id: response.new_id
+                };
+                student_array.push(studentObject);
+                console.log(student_array);
+                updateData();
+                clearAddStudentForm();
+            }
+        });
+    }
     /*if ($(student_vars[0]).val() == '' || $(student_vars[1]).val() == '' || $(student_vars[2]).val() == '') {
         alert('please enter all information');
     }
@@ -110,13 +118,27 @@ function clearAddStudentForm() {
  * removeStudent - removes the student which the user has clicked the delete button
  */
 
-function removeStudent(index) {
-    student_array.splice(index, 1); // remove from student_array
-    console.log(student_array);
-    if (student_array.length === 0) {
-        $('.clear-after-entry').show();
-    }
-    updateData();
+function removeStudent(delete_id) {
+    var data_object = {
+        api_key: 'BmjoMo3MLu',
+        student_id: delete_id
+    };
+    console.log('data obj is :', data_object);
+    $.ajax({
+        data: data_object,
+        dataType: 'json',
+        method: 'post',
+        url: 'https://s-apis.learningfuze.com/sgt/delete',
+        success: function (response) {
+            console.log(student_array);
+            updateData();
+            student_array.splice(delete_id, 1); // remove from student_array
+            console.log(student_array);
+            if (student_array.length === 0) {
+                $('.clear-after-entry').show();
+            }
+        }
+    });
 }
 
 /**
