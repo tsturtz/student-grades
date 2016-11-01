@@ -119,7 +119,7 @@ function getServerData() {
                     name: responseData[i].name,
                     course: responseData[i].course,
                     grade: responseData[i].grade,
-                    id: student_array.length
+                    id: responseData[i].id
                 };
                 student_array.push(studentObject);
                 console.log(student_array);
