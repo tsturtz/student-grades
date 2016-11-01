@@ -34,7 +34,7 @@ function applyClickHandlers() {
     /**
      * getDataClicked - Event Handler when user clicks the get server data button
      */
-    $('.getdata-btn').click(getServerData);
+    //$('.getdata-btn').click(getServerData);
     /**
      * deleteClicked - Event Handler when user clicks the delete button
      */
@@ -51,8 +51,31 @@ function applyClickHandlers() {
  * @return undefined
  */
 function addStudent() {
-    console.log('add student clicked');
-    if ($(student_vars[0]).val() == '' || $(student_vars[1]).val() == '' || $(student_vars[2]).val() == '') {
+    var data_object = {
+        api_key: 'BmjoMo3MLu',
+        name: $(student_vars[0]).val(),
+        course: $(student_vars[1]).val(),
+        grade: ($(student_vars[2]).val())
+    };
+    $.ajax({
+        data: data_object,
+        dataType: 'json',
+        method: 'post',
+        url: 'https://s-apis.learningfuze.com/sgt/create',
+        success: function (response) {
+            var studentObject = {
+                name: $(student_vars[0]).val(),
+                course: $(student_vars[1]).val(),
+                grade: ($(student_vars[2]).val()),
+                id: response.new_id
+            };
+            student_array.push(studentObject);
+            console.log(student_array);
+            updateData();
+            clearAddStudentForm();
+        }
+    });
+    /*if ($(student_vars[0]).val() == '' || $(student_vars[1]).val() == '' || $(student_vars[2]).val() == '') {
         alert('please enter all information');
     }
     else if ($(student_vars[2]).val() < 0 || $(student_vars[2]).val() > 100 || isNaN($(student_vars[2]).val()) == true) {
@@ -70,7 +93,7 @@ function addStudent() {
         console.log(student_array);
         updateData();
         clearAddStudentForm();
-    }
+    }*/
 }
 /**
  * clearAddStudentForm - clears out the form values based on inputIds variable
@@ -170,7 +193,7 @@ function updateStudentList() {
     }
     $('.list-body').empty(); // Empty the tbody DOM elements before re-adding everything in the student array
     for (var i = 0; i < student_array.length; i++) {
-        student_array[i].id = i;
+        //student_array[i].id = i;
         addStudentToDom(student_array[i]);
     }
 }
@@ -185,8 +208,9 @@ function addStudentToDom(studentObj) {
     var s_course = $('<td>').text(studentObj.course);
     var s_grade = $('<td>').text(studentObj.grade);
     var s_button = $('<button>').addClass('btn btn-danger delete-btn').text('Delete').attr('id', studentObj.id);
+    var s_button_td = $('<td>').append(s_button);
     $('.list-body').append(s_row);
-    $('.list-body > tr:last').append(s_name).append(s_course).append(s_grade).append(s_button);
+    $('.list-body > tr:last').append(s_name).append(s_course).append(s_grade).append(s_button_td);
 }
 /**
  * reset - resets the application to initial state. Global variables reset, DOM get reset to initial load state
@@ -203,4 +227,5 @@ function reset() {
  */
 $(document).ready(function () {
     applyClickHandlers();
+    getServerData();
 });
