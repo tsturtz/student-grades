@@ -39,9 +39,11 @@ function applyClickHandlers() {
      * deleteClicked - Event Handler when user clicks the delete button
      */
     $('.list-body').on('click', '.delete-btn', function () {
-        var delete_id = $(this).attr('id'); // index of the row item associated with the student array
-        console.log(delete_id);
-        removeStudent(delete_id);
+        var delete_id = $(this).attr('id'); // id of the item
+        var delete_index = $(this).closest('tr').index(); // index of the row item associated with the student array
+        console.log('delete_id', delete_id);
+        console.log('delete_index', delete_index);
+        removeStudent(delete_id, delete_index);
     });
 }
 
@@ -77,7 +79,7 @@ function addStudent() {
                     id: response.new_id
                 };
                 student_array.push(studentObject);
-                console.log(student_array);
+                console.log('student array', student_array);
                 updateData();
                 clearAddStudentForm();
             }
@@ -107,18 +109,18 @@ function addStudent() {
  * clearAddStudentForm - clears out the form values based on inputIds variable
  */
 function clearAddStudentForm() {
-    console.log('clear student clicked');
+    console.log('clearAddStudentForm clicked');
     $(student_vars[0]).val('');
     $(student_vars[1]).val('');
     $(student_vars[2]).val('');
-    console.log('cleared');
+    console.log('forms cleared');
 }
 
 /**
  * removeStudent - removes the student which the user has clicked the delete button
  */
 
-function removeStudent(delete_id) {
+function removeStudent(delete_id, delete_index) {
     var data_object = {
         api_key: 'BmjoMo3MLu',
         student_id: delete_id
@@ -130,10 +132,9 @@ function removeStudent(delete_id) {
         method: 'post',
         url: 'https://s-apis.learningfuze.com/sgt/delete',
         success: function (response) {
-            console.log(student_array);
+            student_array.splice(delete_index, 1); // remove from student_array
             updateData();
-            student_array.splice(delete_id, 1); // remove from student_array
-            console.log(student_array);
+            console.log('student array', student_array);
             if (student_array.length === 0) {
                 $('.clear-after-entry').show();
             }
@@ -146,7 +147,7 @@ function removeStudent(delete_id) {
  */
 
 function getServerData() {
-    console.log('getserverdata clicked');
+    console.log('getServerData clicked');
     var data_object = {
         api_key: 'BmjoMo3MLu'
     };
@@ -158,7 +159,7 @@ function getServerData() {
         success: function (response) {
             console.log('response received: ', response);
             var responseData = response.data;
-            console.log(responseData);
+            console.log('response received: ', responseData);
             for (var i = 0; i < responseData.length; i++) {
                 var studentObject = {
                     name: responseData[i].name,
@@ -167,7 +168,7 @@ function getServerData() {
                     id: responseData[i].id
                 };
                 student_array.push(studentObject);
-                console.log(student_array);
+                console.log('student array', student_array);
                 updateData();
                 clearAddStudentForm();
             }
