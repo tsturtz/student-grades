@@ -1,13 +1,14 @@
 <!doctype html>
-<html>
+<html ng-app="studentGradeTable">
 <head>
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
     <script src="script.js"></script>
     <meta name="viewport" content="initial-scale=1, user-scalable=no">
 </head>
-<body>
+<body ng-controller="mainCtrl as mc">
 <div class="container">
     <div class="page-header row">
         <!-- only show this element when the isnt on mobile -->
@@ -25,23 +26,23 @@
             <span class="input-group-addon">
                 <span class="glyphicon glyphicon-user"></span>
             </span>
-            <input type="text" class="form-control" name="studentName" id="studentName" placeholder="Student Name">
+            <input ng-model="mc.student.name" type="text" class="form-control" name="studentName" id="studentName" placeholder="Student Name">
         </div>
         <div class="input-group form-group">
             <span class="input-group-addon">
                 <span class="glyphicon glyphicon-list-alt"></span>
             </span>
-            <input type="text" class="form-control" name="course" id="course" placeholder="Student Course">
+            <input ng-model="mc.student.course" type="text" class="form-control" name="course" id="course" placeholder="Student Course">
         </div>
         <div class="input-group form-group">
             <span class="input-group-addon">
                 <span class="glyphicon glyphicon-education"></span>
             </span>
-            <input type="text" class="form-control" name="studentGrade" id="studentGrade"
+            <input ng-model="mc.student.grade" type="text" class="form-control" name="studentGrade" id="studentGrade"
                    placeholder="Student Grade">
         </div>
-        <button type="button" class="btn btn-success add-btn" onclick="">Add</button>
-        <button type="button" class="btn btn-danger cancel-btn" onclick="">Cancel</button>
+        <button ng-click="mc.addStudent()" type="button" class="btn btn-success add-btn" onclick="">Add</button>
+        <button ng-click="mc.student = {}" type="button" class="btn btn-default cancel-btn" onclick="">Clear</button>
         <!--<button type="button" class="btn btn-primary getdata-btn" onclick="">Get Server Data</button>-->
     </div>
     <div class="student-list-container container col-sm-9 col-sm-pull-3">
@@ -55,6 +56,11 @@
             </tr>
             </thead>
             <tbody class="list-body">
+            <tr ng-repeat="student in mc.student_array">
+                <td>{{student.name}}</td>
+                <td>{{student.course}}</td>
+                <td>{{student.grade}}</td>
+            </tr>
             </tbody>
         </table>
         <h2 class="clear-after-entry">User Info Unavailable</h2>
