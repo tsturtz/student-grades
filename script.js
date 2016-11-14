@@ -1,8 +1,6 @@
 var app = angular.module('studentGradeTable', []);
 
 app.controller('mainCtrl', function (dataService) {
-    this.student = {};
-    this.student_array = [];
 
     this.getStudents = function () {
         dataService.get(function (response) {
@@ -24,19 +22,8 @@ app.controller('mainCtrl', function (dataService) {
 
     this.addStudent = function () {
         console.log('add clicked');
-        dataService.add(this.student, function (response) {
-            console.log('callback response');
-            var responseData = response.data;
-            var student = {
-                name: student.name,
-                course: student.course,
-                grade: student.grade,
-                id: responseData.id
-            };
-            student_array.push(student);
-            console.log('student array', student_array);
-            student = {};
-        });
+        dataService.add(this.student);
+        student = {};
     };
 
     this.deleteStudent = function () {
@@ -51,6 +38,9 @@ app.controller('mainCtrl', function (dataService) {
 
 app.service('dataService', function ($http) {
     var dataServiceSelf = this;
+
+    var student = {};
+    var student_array = [];
 
     this.get = function () {
         $http({
@@ -78,15 +68,28 @@ app.service('dataService', function ($http) {
             grade: student.grade
         };
         $http({
-            params: addData,
+            data: $.param(addData),
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             dataType: 'json',
-            method: 'get',
+            method: 'post',
             url: 'https://s-apis.learningfuze.com/sgt/create',
             cache: false
         })
             .then(
-                function (callback) {
+                function (response) {
+                    console.log('student array: ', student_array);
                     console.log('response received');
+                    var responseData = response.data;
+                    console.log('response data: ', responseData);
+                    student = {
+                        name: student.name,
+                        course: student.course,
+                        grade: student.grade,
+                        id: responseData.new_id
+                    };
+                    console.log('student array: ', student_array);
+                    student_array.push(student);
+                    console.log('student array: ', student_array);
                 },
                 function (response) {
                     console.log('failed to ADD student data');

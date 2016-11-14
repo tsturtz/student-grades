@@ -56,10 +56,11 @@
             </tr>
             </thead>
             <tbody class="list-body">
-            <tr ng-repeat="student in mc.student_array">
+            <tr ng-repeat="student in mc.student_array track by $index">
                 <td>{{student.name}}</td>
                 <td>{{student.course}}</td>
                 <td>{{student.grade}}</td>
+                <td><button></button></td>
             </tr>
             </tbody>
         </table>
