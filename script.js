@@ -2,11 +2,19 @@ var app = angular.module('studentGradeTable', []);
 
 app.controller('mainCtrl', function (dataService) {
 
-    this.student_array = dataService.student_array;
-    console.log('student arr: ', this.student_array);
-    dataService.get(); // call get service to populate grade table
-    console.log('student arr: ', this.student_array);
+    var ctrlSelf = this;
 
+    this.student_array = [];
+    console.log('student arr: ', this.student_array);
+    dataService.get()
+        .then(
+            function (response) {
+                ctrlSelf.student_array = response;
+            },
+            function (response) {
+                console.warn(response);
+            }); // call get service to populate grade table
+    console.log('student arr: ', this.student_array);
 
     this.addStudent = function () {
         console.log('add clicked');
@@ -29,13 +37,15 @@ app.controller('mainCtrl', function (dataService) {
 
 });
 
-app.service('dataService', function ($http) {
+app.service('dataService', function ($http, $q) {
     var dataServiceSelf = this;
     var student = {};
 
     this.student_array = [];
 
     this.get = function () {
+        var defer = $q.defer();
+
         $http({
             data: $.param({api_key: 'BmjoMo3MLu'}),
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -47,16 +57,16 @@ app.service('dataService', function ($http) {
             .then(
                 function (response) {
                     console.log('got student data');
-                    var responseData = response.data;
-                    console.log('response received: ', responseData);
-                    dataServiceSelf.student_array = responseData.data;
+                    dataServiceSelf.student_array = response.data.data;
                     console.log('student array', dataServiceSelf.student_array);
-                    dataServiceSelf.update(); // returns student array to update view
+                    defer.resolve(dataServiceSelf.student_array);
                 },
                 function (response) {
                     console.log('failed to GET student data');
+                    defer.reject('failed to GET student data');
                 }
             );
+        return defer.promise;
     };
 
     this.add = function (student) {
