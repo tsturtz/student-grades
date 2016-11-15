@@ -2,28 +2,21 @@ var app = angular.module('studentGradeTable', []);
 
 app.controller('mainCtrl', function (dataService) {
 
-    this.getStudents = function () {
-        dataService.get(function (response) {
-            var responseData = response.data;
-            console.log('response received: ', responseData);
-            for (var i = 0; i < responseData.length; i++) {
-                var student = {
-                    name: responseData[i].name,
-                    course: responseData[i].course,
-                    grade: responseData[i].grade,
-                    id: responseData[i].id
-                };
-                student_array.push(student);
-                console.log('student array', student_array);
-            }
-            student = {};
-        });
-    };
+    this.student_array = dataService.student_array;
+    console.log('student arr: ', this.student_array);
+    dataService.get(); // call get service to populate grade table
+    console.log('student arr: ', this.student_array);
+
 
     this.addStudent = function () {
         console.log('add clicked');
-        dataService.add(this.student);
-        student = {};
+        if (this.student.grade >= 0 && this.student.grade <= 100) {
+            dataService.add(this.student);
+        } else {
+            console.warn('please enter a number');
+        }
+        this.student = {};
+        this.student_array = dataService.student_array;
     };
 
     this.deleteStudent = function () {
@@ -38,21 +31,27 @@ app.controller('mainCtrl', function (dataService) {
 
 app.service('dataService', function ($http) {
     var dataServiceSelf = this;
-
     var student = {};
-    var student_array = [];
+
+    this.student_array = [];
 
     this.get = function () {
         $http({
-            data: {api_key: 'BmjoMo3MLu'},
+            data: $.param({api_key: 'BmjoMo3MLu'}),
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             dataType: 'json',
             method: 'post',
             url: 'https://s-apis.learningfuze.com/sgt/get',
             cache: false
         })
             .then(
-                function (callback) {
+                function (response) {
                     console.log('got student data');
+                    var responseData = response.data;
+                    console.log('response received: ', responseData);
+                    dataServiceSelf.student_array = responseData.data;
+                    console.log('student array', dataServiceSelf.student_array);
+                    dataServiceSelf.update(); // returns student array to update view
                 },
                 function (response) {
                     console.log('failed to GET student data');
@@ -61,6 +60,7 @@ app.service('dataService', function ($http) {
     };
 
     this.add = function (student) {
+        console.log('student passed to service is: ', student);
         var addData = {
             api_key: 'BmjoMo3MLu',
             name: student.name,
@@ -81,15 +81,11 @@ app.service('dataService', function ($http) {
                     console.log('response received');
                     var responseData = response.data;
                     console.log('response data: ', responseData);
-                    student = {
-                        name: student.name,
-                        course: student.course,
-                        grade: student.grade,
-                        id: responseData.new_id
-                    };
+                    student.id = responseData.new_id; // set id property returned from server to student id property
                     console.log('student array: ', student_array);
-                    student_array.push(student);
+                    dataServiceSelf.student_array.push(student); // push new student object into array
                     console.log('student array: ', student_array);
+                    dataServiceSelf.update(); // returns student array to update view
                 },
                 function (response) {
                     console.log('failed to ADD student data');
@@ -106,7 +102,7 @@ app.service('dataService', function ($http) {
             cache: false
         })
             .then(
-                function (callback) {
+                function (response) {
                     var responseData = response.data;
                     console.log('response received: ', responseData);
                 },
@@ -116,7 +112,9 @@ app.service('dataService', function ($http) {
             );
     };
 
-});
+    this.update = function () {
+        console.log('update', dataServiceSelf.student_array);
+        return dataServiceSelf.student_array;
+    }
 
-//this.student_array.push(this.student);
-//this.student = {};
+});
