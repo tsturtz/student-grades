@@ -5,4 +5,4 @@ A grading table to create, read, update, and delete students' grades
 > - JavaScript
 > - jQuery
 > - Firebase database
-> - **Refactored in AngularJS**
+> - *Refactored in* **AngularJS**
