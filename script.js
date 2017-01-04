@@ -4,8 +4,9 @@ app.controller('mainCtrl', function (dataService) {
 
     var ctrlSelf = this;
 
-    this.student_array = [];
+    //this.student_array = [];
     console.log('student arr: ', this.student_array);
+    //call service to get student data
     dataService.get()
         .then(
             function (response) {
@@ -13,9 +14,10 @@ app.controller('mainCtrl', function (dataService) {
             },
             function (response) {
                 console.warn(response);
-            }); // call get service to populate grade table
+            });
     console.log('student arr: ', this.student_array);
 
+    //add student object from form inputs to firebase
     this.addStudent = function () {
         console.log('add clicked');
         if (this.student.grade >= 0 && this.student.grade <= 100) {
@@ -27,6 +29,7 @@ app.controller('mainCtrl', function (dataService) {
         this.student_array = dataService.student_array;
     };
 
+    //delete student object from firebase
     this.deleteStudent = function () {
         console.log('delete clicked');
         dataService.delete(this.student, function (response) {
