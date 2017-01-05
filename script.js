@@ -1,7 +1,3 @@
-/**
- * Define all global variables here
- */
-
 var averageGrade = 0;
 
 /**
@@ -10,17 +6,7 @@ var averageGrade = 0;
  */
 
 var student_array = [];
-
-/**
- * inputIds - id's of the elements that are used to add students
- * @type {string[]}
- */
-
 student_vars = ['#studentName', '#course', '#studentGrade'];
-
-/**
- * applyClickHandlers - After document has loaded, add click handlers
- */
 
 function applyClickHandlers() {
     /**
@@ -245,9 +231,7 @@ function reset() {
     clearAddStudentForm();
     $('.avgGrade').text('0');
 }
-/**
- * Listen for the document to load and reset the data to the initial state
- */
+
 $(document).ready(function () {
     applyClickHandlers();
     getServerData();
