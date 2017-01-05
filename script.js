@@ -4,8 +4,8 @@ app.controller('mainCtrl', function (dataService) {
 
     var ctrlSelf = this;
 
-    //this.student_array = [];
-    console.log('student arr: ', this.student_array);
+    ctrlSelf.student_array = [];
+    console.log('student arr: ', ctrlSelf.student_array);
     //call service to get student data
     dataService.get()
         .then(
@@ -15,27 +15,43 @@ app.controller('mainCtrl', function (dataService) {
             function (response) {
                 console.warn(response);
             });
-    console.log('student arr: ', this.student_array);
+    console.log('student arr: ', ctrlSelf.student_array);
 
-    //add student object from form inputs to firebase
+    //add student object from form inputs
     this.addStudent = function () {
         console.log('add clicked');
         if (this.student.grade >= 0 && this.student.grade <= 100) {
-            dataService.add(this.student);
+            dataService.add(this.student)
+                .then(
+                    function (response) {
+                        ctrlSelf.student_array = response;
+                    },
+                    function (response) {
+                        console.warn(response);
+                    });
         } else {
             console.warn('please enter a number');
         }
-        this.student = {};
-        this.student_array = dataService.student_array;
+        ctrlSelf.student = {};
+        ctrlSelf.student_array = dataService.student_array;
     };
 
-    //delete student object from firebase
-    this.deleteStudent = function () {
+    //delete student object
+    this.deleteStudent = function (student) {
         console.log('delete clicked');
-        dataService.delete(this.student, function (response) {
+        console.info(student);
+        dataService.del(student, function (response) {
             var responseData = response.data;
-            student_array.splice(student);
-        });
+            //student_array.splice(student);
+        })
+            .then(
+                function (response) {
+                    ctrlSelf.student_array = response;
+                },
+                function (response) {
+                    console.warn(response);
+                });
+        ctrlSelf.student_array = dataService.student_array;
     };
 
 });
@@ -44,9 +60,9 @@ app.service('dataService', function ($http, $q) {
     var dataServiceSelf = this;
     var student = {};
 
-    this.student_array = [];
+    dataServiceSelf.student_array = [];
 
-    this.get = function () {
+    dataServiceSelf.get = function () {
         var defer = $q.defer();
 
         $http({
@@ -72,8 +88,9 @@ app.service('dataService', function ($http, $q) {
         return defer.promise;
     };
 
-    this.add = function (student) {
+    dataServiceSelf.add = function (student) {
         console.log('student passed to service is: ', student);
+        var defer = $q.defer();
         var addData = {
             api_key: 'BmjoMo3MLu',
             name: student.name,
@@ -90,25 +107,27 @@ app.service('dataService', function ($http, $q) {
         })
             .then(
                 function (response) {
-                    console.log('student array: ', student_array);
                     console.log('response received');
                     var responseData = response.data;
                     console.log('response data: ', responseData);
                     student.id = responseData.new_id; // set id property returned from server to student id property
-                    console.log('student array: ', student_array);
                     dataServiceSelf.student_array.push(student); // push new student object into array
-                    console.log('student array: ', student_array);
                     dataServiceSelf.update(); // returns student array to update view
+                    defer.resolve(dataServiceSelf.student_array);
                 },
                 function (response) {
                     console.log('failed to ADD student data');
+                    defer.reject('failed to ADD student data');
                 }
             );
+        return defer.promise;
     };
 
-    this.del = function (student) {
+    dataServiceSelf.del = function (student) {
+        var defer = $q.defer();
         $http({
-            data: {api_key: 'BmjoMo3MLu', student_id: student.id},
+            data: $.param({api_key: 'BmjoMo3MLu', student_id: student.id}),
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             dataType: 'json',
             method: 'post',
             url: 'https://s-apis.learningfuze.com/sgt/delete',
@@ -118,14 +137,21 @@ app.service('dataService', function ($http, $q) {
                 function (response) {
                     var responseData = response.data;
                     console.log('response received: ', responseData);
+                    console.log(dataServiceSelf.student_array);
+                    console.warn(dataServiceSelf.student_array.indexOf(student));
+                    dataServiceSelf.student_array.splice(dataServiceSelf.student_array.indexOf(student), 1); // remove student object from array
+                    dataServiceSelf.update(); // returns student array to update view
+                    defer.resolve(dataServiceSelf.student_array);
                 },
                 function (response) {
                     console.log('failed to DELETE student data');
+                    defer.reject('failed to DELETE student data');
                 }
             );
+        return defer.promise;
     };
 
-    this.update = function () {
+    dataServiceSelf.update = function () {
         console.log('update', dataServiceSelf.student_array);
         return dataServiceSelf.student_array;
     }

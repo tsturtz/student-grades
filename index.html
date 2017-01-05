@@ -60,11 +60,11 @@
                 <td>{{student.name}}</td>
                 <td>{{student.course}}</td>
                 <td>{{student.grade}}</td>
-                <td><button class="btn btn-danger">Delete</button></td>
+                <td><button class="btn btn-danger" ng-click="mc.deleteStudent(student)">Delete</button></td>
             </tr>
             </tbody>
         </table>
-        <h2 ng-show="mc.student_array === undefined">User Info Unavailable</h2>
+        <h2 ng-show="mc.student_array.length === 0">User Info Unavailable</h2>
     </div>
 </div>
 </body>
