@@ -2,7 +2,7 @@ angular.module('studentGradeTable', [])
 
     .controller('mainCtrl', function (dataService) {
         var ctrl = this;
-        ctrl.student_array = [];
+        ctrl.student_array = dataService.student_array;
         ctrl.avgGrade = 0.00;
         function getAvg(arr) {
             var total = 0;
@@ -80,25 +80,11 @@ angular.module('studentGradeTable', [])
 
         dataService.get = function () {
             var defer = $q.defer();
-            $http({
-                data: $.param({api_key: 'BmjoMo3MLu'}),
-                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                dataType: 'json',
-                method: 'post',
-                url: 'https://s-apis.learningfuze.com/sgt/get',
-                cache: false
-            })
-                .then(
-                    function (response) {
-                        dataService.student_array = response.data.data;
-                        defer.resolve(dataService.student_array);
-                    },
-                    function (response) {
-                        // TODO: better error handling
-                        console.log('failed to GET student data');
-                        defer.reject('failed to GET student data');
-                    }
-                );
+            fb.ref('students').on('value', function(snapshot) {
+                console.log('snapshot from service: ', snapshot.val());
+                dataService.student_array = snapshot.val();
+                defer.resolve(dataService.student_array);
+            });
             return defer.promise;
         };
 
