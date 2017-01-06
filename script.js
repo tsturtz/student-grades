@@ -63,6 +63,18 @@ angular.module('studentGradeTable', [])
     })
 
     .service('dataService', function ($http, $q) {
+
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyC-U6_tmCFDKu20Kmf3dzSaCn340Ze7kQ4",
+            authDomain: "ng-sgt.firebaseapp.com",
+            databaseURL: "https://ng-sgt.firebaseio.com",
+            storageBucket: "ng-sgt.appspot.com",
+            messagingSenderId: "552596427770"
+        };
+        firebase.initializeApp(config);
+        var fb = firebase.database();
+
         var dataService = this;
         dataService.student_array = [];
 
