@@ -20,7 +20,7 @@ app.controller('mainCtrl', function (dataService) {
     //add student object from form inputs
     this.addStudent = function () {
         console.log('add clicked');
-        if (this.student.grade >= 0 && this.student.grade <= 100) {
+        if (ctrlSelf.student.grade >= 0 && ctrlSelf.student.grade <= 100 && ctrlSelf.student.grade) {
             dataService.add(this.student)
                 .then(
                     function (response) {
@@ -29,10 +29,11 @@ app.controller('mainCtrl', function (dataService) {
                     function (response) {
                         console.warn(response);
                     });
+            ctrlSelf.student = {};
         } else {
-            console.warn('please enter a number');
+            // TODO: better form validation
+            console.warn('please enter a number between 0 and 100');
         }
-        ctrlSelf.student = {};
         ctrlSelf.student_array = dataService.student_array;
     };
 
@@ -42,7 +43,6 @@ app.controller('mainCtrl', function (dataService) {
         console.info(student);
         dataService.del(student, function (response) {
             var responseData = response.data;
-            //student_array.splice(student);
         })
             .then(
                 function (response) {
