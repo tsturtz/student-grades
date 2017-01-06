@@ -64,7 +64,6 @@ angular.module('studentGradeTable', [])
 
     .service('dataService', function ($http, $q) {
         var dataService = this;
-        var student = {};
         dataService.student_array = [];
 
         dataService.get = function () {
