@@ -3,8 +3,6 @@ angular.module('studentGradeTable', [])
     .controller('mainCtrl', function (dataService) {
         var ctrl = this;
 
-        //ctrl.student_array = dataService.student_array;
-
         // Set initial and calculate grade average
         ctrl.avgGrade = 0.00;
         function getAvg(arr) {
@@ -19,6 +17,12 @@ angular.module('studentGradeTable', [])
             }
         }
 
+        ctrl.order = 'name';
+        ctrl.orderItems = function (orderBy) {
+            ctrl.order = orderBy === ctrl.ordered ? '-' + orderBy : orderBy;
+            ctrl.ordered = ctrl.order;
+        };
+
         // Call service to get student data, then sync array and get grade average (updates DOM).
         dataService.get()
             .then(
@@ -32,7 +36,7 @@ angular.module('studentGradeTable', [])
                 });
 
         // Pass student object (from form inputs) to service to be added, then sync array and get grade average (updates DOM).
-        this.addStudent = function () {
+        ctrl.addStudent = function () {
             if (ctrl.student.grade === 0 || ctrl.student.grade > 0 && ctrl.student.grade <= 100 && ctrl.student.grade) {
                 dataService.add(ctrl.student)
                     .then(
@@ -53,8 +57,7 @@ angular.module('studentGradeTable', [])
         };
 
         // Pass student object to service to be deleted, then sync array and get grade average (updates DOM).
-        this.deleteStudent = function (student) {
-            console.log(student);
+        ctrl.deleteStudent = function (student) {
             dataService.del(student)
                 .then(
                     function (response) {
