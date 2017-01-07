@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" ng-app="studentGradeTable">
+<html lang="en" ng-app="studentGradeTable" ng-cloak>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1, user-scalable=no">
@@ -70,5 +70,16 @@
         <h2 ng-show="mc.student_array.length === 0">User Info Unavailable</h2>
     </div>
 </div>
+<script>
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyC-U6_tmCFDKu20Kmf3dzSaCn340Ze7kQ4",
+        authDomain: "ng-sgt.firebaseapp.com",
+        databaseURL: "https://ng-sgt.firebaseio.com",
+        storageBucket: "ng-sgt.appspot.com",
+        messagingSenderId: "552596427770"
+    };
+    firebase.initializeApp(config);
+</script>
 </body>
 </html>
