@@ -1,54 +1,58 @@
 angular.module('studentGradeTable', [])
 
-    .controller('mainCtrl', function (dataService, $scope) {
+    .controller('mainCtrl', function (dataService) {
         var ctrl = this;
-        var fb = firebase.database();
 
-        ctrl.student_array = dataService.student_array;
+        //ctrl.student_array = dataService.student_array;
+
+        // Set initial and calculate grade average
         ctrl.avgGrade = 0.00;
         function getAvg(arr) {
             var total = 0;
-            for (var i = 0; i < arr.length; i++) {
-                total += arr[i].grade;
+            if (arr.length === 0) {
+                return 0.00;
+            } else {
+                for (var i = 0; i < arr.length; i++) {
+                    total += arr[i].grade;
+                }
+                return total / arr.length;
             }
-            return total / arr.length;
         }
 
-        //call service to get student data
+        // Call service to get student data, then sync array and get grade average (updates DOM).
         dataService.get()
             .then(
                 function (response) {
                     ctrl.student_array = response;
                     ctrl.avgGrade = getAvg(ctrl.student_array);
                 },
-                function (response) {
+                function (err) {
                     // TODO: better error handling
-                    console.warn(response);
+                    console.warn(err);
                 });
 
-        //add student object from form inputs
+        // Pass student object (from form inputs) to service to be added, then sync array and get grade average (updates DOM).
         this.addStudent = function () {
-            if (ctrl.student.grade >= 0 && ctrl.student.grade <= 100 && ctrl.student.grade) {
+            if (ctrl.student.grade === 0 || ctrl.student.grade > 0 && ctrl.student.grade <= 100 && ctrl.student.grade) {
                 dataService.add(ctrl.student)
                     .then(
                         function (response) {
-                            console.log(response);
                             ctrl.student_array = response;
                             ctrl.avgGrade = getAvg(ctrl.student_array);
                         },
-                        function (response) {
+                        function (err) {
                             // TODO: better error handling
-                            console.warn(response);
+                            console.warn(err);
                         });
+                // Clear form inputs
                 ctrl.student = {};
             } else {
                 // TODO: better form validation
-                console.warn('please enter a number between 0 and 100');
+                console.warn('you entered ' + '"' + ctrl.student.grade + '"' + ' -- please enter a number between 0 and 100, inclusive');
             }
-            ctrl.student_array = dataService.student_array;
         };
 
-        //delete student object
+        // Pass student object to service to be deleted, then sync array and get grade average (updates DOM).
         this.deleteStudent = function (student) {
             console.log(student);
             dataService.del(student)
@@ -57,114 +61,86 @@ angular.module('studentGradeTable', [])
                         ctrl.student_array = response;
                         ctrl.avgGrade = getAvg(ctrl.student_array);
                     },
-                    function (response) {
+                    function (err) {
                         // TODO: better error handling
-                        console.warn(response);
+                        console.warn(err);
                     });
-            ctrl.student_array = dataService.student_array;
         };
 
     })
 
     .service('dataService', function ($http, $q) {
 
+        // Initialize Firebase Database
+        var config = {
+            apiKey: "AIzaSyC-U6_tmCFDKu20Kmf3dzSaCn340Ze7kQ4",
+            authDomain: "ng-sgt.firebaseapp.com",
+            databaseURL: "https://ng-sgt.firebaseio.com",
+            storageBucket: "ng-sgt.appspot.com",
+            messagingSenderId: "552596427770"
+        };
+        firebase.initializeApp(config);
         var fb = firebase.database();
 
         var dataService = this;
         dataService.student_array = [];
 
+        // Gets students array from Firebase and returns a promise.
         dataService.get = function () {
             var defer = $q.defer();
             fb.ref('students').on('value', function (snapshot) {
-                dataService.student_array = snapshot.val();
-                snapshot.forEach(function (childSnapshot) {
-                    dataService.student_array[childSnapshot.key].id = childSnapshot.key;
-                });
-                dataService.student_array = Object.values(dataService.student_array); // Convert JSON object to array
-                console.info(dataService.student_array);
-                defer.resolve(dataService.student_array);
+                if (snapshot.val() !== null) {
+                    // Syncs student_array with 'students' JSON object.
+                    dataService.student_array = snapshot.val();
+                    // Assigns each dynamically created key to new property 'id' on each object.
+                    snapshot.forEach(function (keys) {
+                        dataService.student_array[keys.key].id = keys.key;
+                    });
+                    // Converts JSON object to a numerically indexed array and resolves promise.
+                    dataService.student_array = Object.values(dataService.student_array);
+                    defer.resolve(dataService.student_array);
+                } else {
+                    defer.resolve(dataService.student_array);
+                }
             });
             return defer.promise;
         };
 
+        // Adds student object as a value of a unique key, generated based on timestamp. Pushes it to the last position on Firebase 'students' JSON object and then returns a promise to controller.
         dataService.add = function (student) {
             var defer = $q.defer();
-
             fb.ref('students').push(student)
                 .then(
-                    function (response) {
-                        //student.id = response.data.new_id; // set id property returned from server to student id property
+                    function () {
                         defer.resolve(dataService.student_array);
                     },
-                    function (err) {
+                    function () {
                         // TODO: better error handling
-                        console.log('failed to ADD student data', err);
-                        defer.reject('failed to ADD student data', err);
+                        console.log('failed to ADD student data');
+                        defer.reject('failed to ADD student data');
                     });
-
-            /*var addData = {
-             api_key: 'BmjoMo3MLu',
-             name: student.name,
-             course: student.course,
-             grade: student.grade
-             };
-             $http({
-             data: $.param(addData),
-             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-             dataType: 'json',
-             method: 'post',
-             url: 'https://s-apis.learningfuze.com/sgt/create',
-             cache: false
-             })
-             .then(
-             function (response) {
-             student.id = response.data.new_id; // set id property returned from server to student id property
-             dataService.student_array.push(student); // push new student object into array
-             defer.resolve(dataService.student_array);
-             },
-             function (response) {
-             // TODO: better error handling
-             console.log('failed to ADD student data');
-             defer.reject('failed to ADD student data');
-             }
-             );*/
             return defer.promise;
         };
 
+        // Deletes student object from Firebase based on the object's key which is identical to its 'id' property and then returns a promise to controller.
         dataService.del = function (student) {
             var defer = $q.defer();
-
             fb.ref('students/' + student.id).remove()
                 .then(
-                    function (response) {
-                        //student.id = response.data.new_id; // set id property returned from server to student id property
+                    function () {
+                        // Clear student array if Firebase data is empty.
+                        fb.ref('students').once('value', function (snapshot) {
+                            if (snapshot.val() === null) {
+                                dataService.student_array = [];
+                            }
+                        });
                         defer.resolve(dataService.student_array);
                     },
-                    function (err) {
+                    function () {
                         // TODO: better error handling
-                        console.log('failed to DEL student data', err);
-                        defer.reject('failed to DEL student data', err);
+                        console.log('failed to DEL student data');
+                        defer.reject('failed to DEL student data');
                     });
-
-            /*$http({
-             data: $.param({api_key: 'BmjoMo3MLu', student_id: student.id}),
-             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-             dataType: 'json',
-             method: 'post',
-             url: 'https://s-apis.learningfuze.com/sgt/delete',
-             cache: false
-             })
-             .then(
-             function (response) {
-             dataService.student_array.splice(dataService.student_array.indexOf(student), 1); // remove student object from array
-             defer.resolve(dataService.student_array);
-             },
-             function (response) {
-             // TODO: better error handling
-             console.log('failed to DELETE student data');
-             defer.reject('failed to DELETE student data');
-             }
-             );*/
             return defer.promise;
         };
 

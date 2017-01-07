@@ -49,7 +49,7 @@
         <button ng-click="mc.student = {}" type="button" class="btn btn-default">Clear</button>
     </div>
     <div class="container col-sm-9 col-sm-pull-3">
-        <table class="table">
+        <table class="table table-hover">
             <thead>
             <tr>
                 <th>Student Name</th>
@@ -67,19 +67,8 @@
             </tr>
             </tbody>
         </table>
-        <h2 ng-show="mc.student_array.length === 0">User Info Unavailable</h2>
+        <div class="well well-lg text-center" ng-show="mc.student_array.length === 0">No student data available</div>
     </div>
 </div>
-<script>
-    // Initialize Firebase
-    var config = {
-        apiKey: "AIzaSyC-U6_tmCFDKu20Kmf3dzSaCn340Ze7kQ4",
-        authDomain: "ng-sgt.firebaseapp.com",
-        databaseURL: "https://ng-sgt.firebaseio.com",
-        storageBucket: "ng-sgt.appspot.com",
-        messagingSenderId: "552596427770"
-    };
-    firebase.initializeApp(config);
-</script>
 </body>
 </html>
