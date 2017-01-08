@@ -88,10 +88,14 @@ angular.module('studentGradeTable', ['focus-if', 'ngAnimate'])
             console.log('Student Object: ', student);
             console.log('property being updated: ', prop);
             console.log('updating with: ', update);
-            if (update === null || update === undefined) {
+            if (update === null || update === '') {
                 update = prop === 'name' ? 'No name'
                     : prop === 'course' ? 'No course'
                     : 'No grade'
+            }
+            if (update === undefined) {
+                console.log('Not editing anything');
+                return;
             }
             student[prop] = update;
             console.info('Student Object: ', student);

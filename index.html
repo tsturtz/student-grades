@@ -16,96 +16,87 @@
     <script src="https://rawgit.com/hiebj/ng-focus-if/master/focusIf.min.js"></script>
     <script src="script.js"></script>
     <style>
+        /*Table styles*/
         .fa-sort {
             color: lightgray;
         }
-
-        th:not(:last-child), td:not(:last-child), th:not(:nth-child(3)), td:not(:nth-child(3)) {
+        th {
             cursor: pointer;
-            width: 40%;
+        }
+        td {
+            cursor: default;
+        }
+        th, td {
             padding-right: 0;
             padding-left: 0;
-        }
-
-        th:last-child, td:last-child, th:nth-child(3), th:nth-child(3) {
-            cursor: pointer;
-            width: 10%;
-            padding-right: 0;
-            padding-left: 0;
-        }
-
-        tr td {
             vertical-align: middle !important;
         }
-
+        th:first-child, td:first-child {
+            width: 30%;
+        }
+        th:nth-child(2), td:nth-child(2) {
+            width: 40%
+        }
+        th:nth-child(3), td:nth-child(3) {
+            width: 25%;
+        }
+        th:last-child, td:last-child {
+            width: 10%;
+        }
         td > input[type='text'], td > input[type='number'] {
             width: 100%;
         }
 
-        .buttons-group {
-            margin-bottom: 15px;
-            border-bottom: 1px solid rgba(0,0,0,0);
-        }
-
+        /*Classes for table data dynamic styling*/
         .emptyClass {
             color: #f0ad4e;
             font-size: 12px;
             font-style: italic;
         }
-
         .succeeding {
             color: #5cb85c;
         }
-
         .passing {
             color: #5bc0de;
         }
-
         .barely-passing {
             color: #f0ad4e;
         }
-
         .failing {
             color: #d9534f;
         }
 
+        /*Sorting animations*/
         .ng-move {
             -webkit-transition: all ease-in .7s;
             transition: all ease-in .7s;
             opacity: 0;
         }
-
         .ng-move.ng-move-active {
             opacity: 1;
         }
 
-        /*Bootstrap outline buttons workaround*/
+        /*Bootstrap 'outline' buttons workaround*/
         .outline {
             background-color: transparent;
             color: inherit;
             transition: all .25s;
         }
-
         .btn-primary.outline {
             color: #428bca;
         }
-
         .btn-success.outline {
             color: #5cb85c;
         }
-
         .btn-info.outline {
             color: #5bc0de;
         }
-
         .btn-warning.outline {
             color: #f0ad4e;
         }
-
         .btn-danger.outline {
             color: #d9534f;
         }
-
         .btn-primary.outline:hover,
         .btn-success.outline:hover,
         .btn-info.outline:hover,
@@ -114,6 +105,7 @@
             color: #fff;
         }
 
+        /*Mobile font size adjustment*/
         @media all and (max-width: 500px) {
             th, td {
                 font-size: 0.8em;
@@ -133,7 +125,8 @@
         <!-- mobile-view -->
         <h3 class="visible-xs col-xs-12 text-center">Student Grade Table<br>
             <small>Grade Average
-                <span class="label" ng-class="mc.avgGradeColor">{{mc.avgGrade.toFixed(2)}}</span></small>
+                <span class="label" ng-class="mc.avgGradeColor">{{mc.avgGrade.toFixed(2)}}</span>
+            </small>
         </h3>
     </div>
     <div class="col-sm-3 well well-lg">
@@ -186,13 +179,13 @@
                 <a ng-click="mc.addStudent()"
                    type="button"
                    class="btn btn-primary col-md-8">
-                    <i class="fa fa-user-plus"></i>&nbsp; Add Student
+                    <i class="fa fa-user-plus"></i>&nbsp; <small>ADD STUDENT</small>
                 </a>
                 <a ng-click="mc.student = {}; filterInput = ''"
                    type="button"
                    class="btn btn-default outline col-md-3 col-md-offset-1">
                     <!--<span class="glyphicon glyphicon-refresh"></span>-->
-                    <i class="fa fa-eraser"></i>
+                    <small><small>CLEAR</small></small>
                 </a>
             </div>
         </form>
@@ -219,7 +212,7 @@
                         {{ student.name }}
                     </span>
                     <input type="text"
-                           placeholder="{{student.name}}"
+                           ng-value="student.name"
                            ng-show="editName"
                            ng-model="updateName"
                            ng-blur="editName = false; mc.editStudent(student, 'name', updateName); focus = false"
@@ -236,7 +229,7 @@
                         {{ student.course }}
                     </span>
                     <input type="text"
-                           placeholder="{{student.course}}"
+                           ng-value="student.course"
                            ng-show="editCourse"
                            ng-model="updateCourse"
                            ng-blur="editCourse = false; mc.editStudent(student, 'course', updateCourse); focus = false"
@@ -253,7 +246,7 @@
                         {{ student.grade }}
                     </span>
                     <input type="number"
-                           placeholder="{{student.grade}}"
+                           ng-value="student.grade"
                            ng-show="editGrade"
                            ng-model="updateGrade"
                            ng-blur="editGrade = false; mc.editStudent(student, 'grade', updateGrade); focus = false"
@@ -263,7 +256,7 @@
                 <!-- non-mobile-view -->
                 <td class="hidden-xs">
                     <a ng-click="mc.deleteStudent(student)" class="btn btn-danger outline">
-                        <i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+                        <i class="fa fa-trash-o" aria-hidden="true"></i> <small><small>DELETE</small></small>
                     </a>
                 </td>
                 <!-- mobile-view -->
