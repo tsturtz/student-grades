@@ -4,11 +4,11 @@ angular.module('studentGradeTable', ['focus-if'])
         var ctrl = this;
 
         // Set size of input dynamically depending on how many characters are in input field.
+        /*ctrl.size = 3;
         ctrl.inputSize = function (thisInput) {
             console.warn(thisInput.length);
-            debugger; //TODO: BACKSPACE ON ANY NUMBER LESS THAN 100 CAUSES AN ENTRY EVENT.
             ctrl.size = thisInput.length;
-        };
+        };*/
 
         // Set initial and calculate grade average
         ctrl.avgGrade = 0.00;
@@ -20,7 +20,12 @@ angular.module('studentGradeTable', ['focus-if'])
                 for (var i = 0; i < arr.length; i++) {
                     total += arr[i].grade;
                 }
-                return total / arr.length;
+                var result = total / arr.length;
+                ctrl.avgGradeColor = result >= 85 ? 'label-success'
+                    : result >= 70 ? 'label-warning'
+                    : result >= 1 ? 'label-danger'
+                    : 'label-default';
+                return result;
             }
         }
 

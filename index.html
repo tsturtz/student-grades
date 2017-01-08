@@ -6,6 +6,7 @@
 
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="style.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
@@ -18,16 +19,19 @@
             color: lightgray;
         }
 
-        th {
+        th, td {
             cursor: pointer;
+            width: 25%;
+            padding-right: 0;
+            padding-left: 0;
         }
 
         tr td {
             vertical-align: middle !important;
         }
 
-        td {
-            cursor: default;
+        td > input[type='text'], td > input[type='number'] {
+            width: 100%;
         }
 
         .emptyClass {
@@ -65,6 +69,12 @@
         .btn-danger.outline:hover {
             color: #fff;
         }
+
+        @media all and (max-width: 500px) {
+            th, td {
+                font-size: 0.8em;
+            }
+        }
     </style>
 </head>
 <body ng-controller="mainCtrl as mc">
@@ -72,44 +82,62 @@
     <div class="page-header row">
         <!-- non-mobile-view -->
         <h1 class="hidden-xs">Student Grade Table
-            <small class="pull-right">Grade Average : <span
-                    class="label label-default">{{mc.avgGrade.toFixed(2)}}</span></small>
+            <small class="pull-right">Grade Average
+                <span class="label" ng-class="mc.avgGradeColor"> {{ mc.avgGrade.toFixed(2) }}</span>
+            </small>
         </h1>
         <!-- mobile-view -->
-        <h3 class="visible-xs">Student Grade Table
-            <small class="pull-right">Grade Average : <span
-                    class="label label-default">{{mc.avgGrade.toFixed(2)}}</span></small>
+        <h3 class="visible-xs col-xs-12 text-center">Student Grade Table<br>
+            <small>Grade Average
+                <span class="label" ng-class="mc.avgGradeColor">{{mc.avgGrade.toFixed(2)}}</span></small>
         </h3>
     </div>
-    <div class="col-sm-3">
+    <div class="col-sm-3 well well-lg">
         <form role="form" autocomplete="off">
             <h4>Add a New Student:</h4>
             <div class="input-group form-group">
             <span class="input-group-addon">
                 <span class="glyphicon glyphicon-user"></span>
             </span>
-                <input ng-model="mc.student.name" type="text" class="form-control" name="studentName" id="studentName"
+                <input ng-model="mc.student.name"
+                       type="text"
+                       class="form-control"
+                       name="studentName"
+                       id="studentName"
                        placeholder="Student Name">
             </div>
             <div class="input-group form-group">
             <span class="input-group-addon">
                 <span class="glyphicon glyphicon-list-alt"></span>
             </span>
-                <input ng-model="mc.student.course" type="text" class="form-control" name="course" id="course"
+                <input ng-model="mc.student.course"
+                       type="text"
+                       class="form-control"
+                       name="course"
+                       id="course"
                        placeholder="Student Course">
             </div>
             <div class="input-group form-group">
             <span class="input-group-addon">
                 <span class="glyphicon glyphicon-education"></span>
             </span>
-                <input ng-model="mc.student.grade" type="number" class="form-control" name="studentGrade"
+                <input ng-model="mc.student.grade"
+                       type="number"
+                       class="form-control"
+                       name="studentGrade"
                        id="studentGrade"
                        placeholder="Student Grade">
             </div>
-            <button ng-click="mc.addStudent()" type="button" class="btn btn-primary btn-block outline"><i
-                    class="fa fa-user-plus" aria-hidden="true"></i> Add Student
-            </button>
-            <button ng-click="mc.student = {}" type="button" class="btn btn-default outline btn-block">Clear Inputs</button>
+            <a ng-click="mc.addStudent()"
+               type="button"
+               class="btn btn-primary col-md-8">
+                <span class="glyphicon glyphicon-plus"></span>&nbsp; Add Student
+            </a>
+            <a ng-click="mc.student = {}"
+               type="button"
+               class="btn btn-default outline col-md-3 col-md-offset-1">
+                <span class="glyphicon glyphicon-refresh"></span>
+            </a>
         </form>
     </div>
     <div class="container col-sm-9">
@@ -123,65 +151,71 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="student in mc.student_array | orderBy : mc.order" data-toggle="tooltip"  data-placement="left" title="Click any field to edit" tooltip>
-                <td class="row-fluid">
+            <tr ng-repeat="student in mc.student_array | orderBy : mc.order">
+                <td class="row-fluid" ng-click="editName = true; focus = true">
                     <span ng-hide="editName"
-                          ng-click="editName = true; focus = true"
                           ng-class="student.name.length === 0 ? 'emptyClass' : ''"
-                    >{{ student.name ? student.name : 'Click to add name' }}
+                          data-toggle="tooltip"
+                          data-placement="bottom"
+                          title="Click to edit"
+                          tooltip>
+                        {{ student.name ? student.name : 'Click to add name' }}
                     </span>
-                    <input
-                            type="text"
-                            placeholder="Name"
-                            size="{{ mc.size ? student.name.length : mc.inputSize(student.name) }}"
-                            ng-show="editName"
-                            ng-model="student.name"
-                            ng-change="mc.inputSize(student.name)"
-                            ng-blur="editName = false; mc.editStudent(student); focus = false"
-                            focus-if="focus"
-                            ng-keypress="($event.which === 13) ? editName = false : editName = true"
-                    >
+                    <input type="text"
+                           placeholder="Name"
+                           size="{{ mc.size }}"
+                           ng-show="editName"
+                           ng-model="student.name"
+                           ng-blur="editName = false; mc.editStudent(student); focus = false"
+                           focus-if="focus"
+                           ng-keypress="($event.which === 13) ? editName = false : editName = true">
                 </td>
-                <td class="row-fluid">
+                <td class="row-fluid" ng-click="editCourse = true; focus = true">
                     <span ng-hide="editCourse"
-                          ng-click="editCourse = true; focus = true"
                           ng-class="student.course.length === 0 ? 'emptyClass' : ''"
-                    >{{ student.course ? student.course : 'Click to add course' }}
+                          data-toggle="tooltip"
+                          data-placement="bottom"
+                          title="Click to edit"
+                          tooltip>
+                        {{ student.course ? student.course : 'Click to add course' }}
                     </span>
-                    <input
-                            type="text"
-                            placeholder="Course"
-                            size="{{ mc.size ? student.course.length : mc.inputSize(student.course) }}"
-                            ng-show="editCourse"
-                            ng-model="student.course"
-                            ng-change="mc.inputSize(student.course)"
-                            ng-blur="editCourse = false; mc.editStudent(student); focus = false"
-                            focus-if="focus"
-                            ng-keypress="($event.which === 13) ? editCourse = false : editCourse = true"
-                    >
+                    <input type="text"
+                           placeholder="Course"
+                           size="{{ mc.size }}"
+                           ng-show="editCourse"
+                           ng-model="student.course"
+                           ng-blur="editCourse = false; focus = false; mc.editStudent(student)"
+                           focus-if="focus"
+                           ng-keypress="($event.which === 13) ? editCourse = false : editCourse = true">
                 </td>
-                <td class="row-fluid">
+                <td class="row-fluid" ng-click="editGrade = true; focus = true">
                     <span ng-hide="editGrade"
-                          ng-click="editGrade = true; focus = true"
                           ng-class="student.grade.length === 0 ? 'emptyClass' : ''"
-                    >{{ student.grade ? student.grade : 'Click to add grade' }}
+                          data-toggle="tooltip"
+                          data-placement="bottom"
+                          title="Click to edit"
+                          tooltip>
+                        {{ student.grade ? student.grade : 'Click to add grade' }}
                     </span>
-                    <input
-                            type="text"
-                            placeholder="Grade"
-                            size="{{ mc.size ? student.grade.toString().length : mc.inputSize(student.grade.toString()) }}"
-                            ng-show="editGrade"
-                            ng-model="student.grade"
-                            ng-change="mc.inputSize(student.grade)"
-                            ng-blur="editGrade = false; mc.editStudent(student); focus = false"
-                            focus-if="focus"
-                            ng-keypress="($event.which === 13) ? editGrade = false : editGrade = true"
-                    >
+                    <input type="number"
+                           placeholder="Grade"
+                           size="{{ mc.size }}"
+                           ng-show="editGrade"
+                           ng-model="student.grade"
+                           ng-blur="editGrade = false; focus = false; mc.editStudent(student)"
+                           focus-if="focus"
+                           ng-keypress="($event.which === 13) ? editGrade = false : editGrade = true">
                 </td>
-                <td>
-                    <a ng-click="mc.deleteStudent(student)" class="btn btn-danger outline"><i class="fa fa-trash-o"
-                                                                                            aria-hidden="true"></i>
-                        Delete
+                <!-- non-mobile-view -->
+                <td class="hidden-xs">
+                    <a ng-click="mc.deleteStudent(student)" class="btn btn-danger outline">
+                        <i class="fa fa-trash-o" aria-hidden="true"></i> Delete
+                    </a>
+                </td>
+                <!-- mobile-view -->
+                <td class="visible-xs">
+                    <a ng-click="mc.deleteStudent(student)" class="btn btn-danger outline btn-xs">
+                        <i class="fa fa-trash-o" aria-hidden="true"></i> Delete
                     </a>
                 </td>
             </tr>
