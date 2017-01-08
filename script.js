@@ -1,7 +1,14 @@
-angular.module('studentGradeTable', [])
+angular.module('studentGradeTable', ['focus-if'])
 
     .controller('mainCtrl', function (dataService) {
         var ctrl = this;
+
+        // Set size of input dynamically depending on how many characters are in input field.
+        ctrl.inputSize = function (thisInput) {
+            console.warn(thisInput.length);
+            debugger; //TODO: BACKSPACE ON ANY NUMBER LESS THAN 100 CAUSES AN ENTRY EVENT.
+            ctrl.size = thisInput.length;
+        };
 
         // Set initial and calculate grade average
         ctrl.avgGrade = 0.00;
@@ -17,7 +24,8 @@ angular.module('studentGradeTable', [])
             }
         }
 
-        ctrl.order = 'name';
+        // Set initial sort order and logic for orderBy param clicked
+        ctrl.order = '-grade';
         ctrl.orderItems = function (orderBy) {
             ctrl.order = orderBy === ctrl.ordered ? '-' + orderBy : orderBy;
             ctrl.ordered = ctrl.order;
@@ -69,6 +77,10 @@ angular.module('studentGradeTable', [])
                         console.warn(err);
                     });
         };
+
+        ctrl.editStudent = function (student) {
+            console.log('editing: ', student);
+        }
 
     })
 
@@ -147,4 +159,13 @@ angular.module('studentGradeTable', [])
             return defer.promise;
         };
 
+    })
+
+    .directive('tooltip', function () {
+        return {
+            restrict: 'A',
+            link: function (scope, element) {
+                $(element).tooltip({title: "Hooray!", delay: {show: 1000, hide: 500}, animation: true});
+            }
+        };
     });
