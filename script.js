@@ -1,4 +1,4 @@
-angular.module('studentGradeTable', ['focus-if'])
+angular.module('studentGradeTable', ['focus-if', 'ngAnimate'])
 
     .controller('mainCtrl', function (dataService) {
         var ctrl = this;
@@ -21,7 +21,8 @@ angular.module('studentGradeTable', ['focus-if'])
                 }
                 var result = total / (arr.length - countOfNaNs);
                 // Set color scale for grade average: 0 is grey, < 70 is red, < 85 is orange, >= 85 is green
-                ctrl.avgGradeColor = result >= 85 ? 'label-success'
+                ctrl.avgGradeColor = result >= 90 ? 'label-success'
+                    : result >= 80 ? 'label-info'
                     : result >= 70 ? 'label-warning'
                     : result >= 1 ? 'label-danger'
                     : 'label-default';

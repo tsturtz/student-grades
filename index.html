@@ -11,6 +11,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-animate.js"></script>
     <script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
     <script src="https://rawgit.com/hiebj/ng-focus-if/master/focusIf.min.js"></script>
     <script src="script.js"></script>
@@ -50,6 +51,32 @@
             color: #f0ad4e;
             font-size: 12px;
             font-style: italic;
+        }
+
+        .succeeding {
+            color: #5cb85c;
+        }
+
+        .passing {
+            color: #5bc0de;
+        }
+
+        .barely-passing {
+            color: #f0ad4e;
+        }
+
+        .failing {
+            color: #d9534f;
+        }
+
+        .ng-move {
+            -webkit-transition: all ease-in .7s;
+            transition: all ease-in .7s;
+            opacity: 0;
+        }
+
+        .ng-move.ng-move-active {
+            opacity: 1;
         }
 
         /*Bootstrap outline buttons workaround*/
@@ -181,10 +208,10 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="student in mc.student_array | orderBy : mc.order | filter : filterInput">
+            <tr ng-repeat="student in mc.student_array | orderBy : mc.order | filter : filterInput" class="students-animate">
                 <td class="row-fluid" ng-click="editName = true; focus = true">
                     <span ng-hide="editName"
-                          ng-class="student.name === 'No name' ? 'emptyClass' : ''"
+                          ng-class=" {'emptyClass' : student.name === 'No name'} "
                           data-toggle="tooltip"
                           data-placement="right"
                           title="Click to edit"
@@ -193,7 +220,6 @@
                     </span>
                     <input type="text"
                            placeholder="{{student.name}}"
-                           maxlength="20"
                            ng-show="editName"
                            ng-model="updateName"
                            ng-blur="editName = false; mc.editStudent(student, 'name', updateName); focus = false"
@@ -202,7 +228,7 @@
                 </td>
                 <td class="row-fluid" ng-click="editCourse = true; focus = true">
                     <span ng-hide="editCourse"
-                          ng-class="student.course === 'No course' ? 'emptyClass' : ''"
+                          ng-class=" {'emptyClass' : student.course === 'No course'} "
                           data-toggle="tooltip"
                           data-placement="left"
                           title="Click to edit"
@@ -211,7 +237,6 @@
                     </span>
                     <input type="text"
                            placeholder="{{student.course}}"
-                           maxlength="20"
                            ng-show="editCourse"
                            ng-model="updateCourse"
                            ng-blur="editCourse = false; mc.editStudent(student, 'course', updateCourse); focus = false"
@@ -220,7 +245,7 @@
                 </td>
                 <td class="row-fluid" ng-click="editGrade = true; focus = true">
                     <span ng-hide="editGrade"
-                          ng-class="student.grade === 'No grade' ? 'emptyClass' : ''"
+                          ng-class=" {'emptyClass' : student.grade === 'No grade', 'failing' : student.grade < 70, 'barely-passing' : student.grade < 80, 'passing' : student.grade < 90, 'succeeding' : student.grade >= 90} "
                           data-toggle="tooltip"
                           data-placement="right"
                           title="Click to edit"
