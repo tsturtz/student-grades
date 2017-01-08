@@ -3,24 +3,24 @@ angular.module('studentGradeTable', ['focus-if'])
     .controller('mainCtrl', function (dataService) {
         var ctrl = this;
 
-        // Set size of input dynamically depending on how many characters are in input field.
-        /*ctrl.size = 3;
-        ctrl.inputSize = function (thisInput) {
-            console.warn(thisInput.length);
-            ctrl.size = thisInput.length;
-        };*/
-
         // Set initial and calculate grade average
         ctrl.avgGrade = 0.00;
         function getAvg(arr) {
             var total = 0;
+            var countOfNaNs = 0;
             if (arr.length === 0) {
                 return 0.00;
             } else {
                 for (var i = 0; i < arr.length; i++) {
-                    total += arr[i].grade;
+                    if (isNaN(arr[i].grade)) {
+                        countOfNaNs++;
+                        console.log('student removed from grade average calculation because of NaN grade property: ', arr[i].name)
+                    } else {
+                        total += arr[i].grade;
+                    }
                 }
-                var result = total / arr.length;
+                var result = total / (arr.length - countOfNaNs);
+                // Set color scale for grade average: 0 is grey, < 70 is red, < 85 is orange, >= 85 is green
                 ctrl.avgGradeColor = result >= 85 ? 'label-success'
                     : result >= 70 ? 'label-warning'
                     : result >= 1 ? 'label-danger'
@@ -83,8 +83,27 @@ angular.module('studentGradeTable', ['focus-if'])
                     });
         };
 
-        ctrl.editStudent = function (student) {
-            console.log('editing: ', student);
+        ctrl.editStudent = function (student, prop, update) {
+            console.log('Student Object: ', student);
+            console.log('property being updated: ', prop);
+            console.log('updating with: ', update);
+            if (update === null || update === undefined) {
+                update = prop === 'name' ? 'No name'
+                    : prop === 'course' ? 'No course'
+                    : 'No grade'
+            }
+            student[prop] = update;
+            console.info('Student Object: ', student);
+            dataService.edit(student)
+                .then(
+                    function (response) {
+                        ctrl.student_array = response;
+                        ctrl.avgGrade = getAvg(ctrl.student_array);
+                    },
+                    function (err) {
+                        // TODO: better error handling
+                        console.warn(err);
+                    });
         }
 
     })
@@ -164,13 +183,36 @@ angular.module('studentGradeTable', ['focus-if'])
             return defer.promise;
         };
 
+        // Updates student object in Firebase based on the object's key which is identical to its 'id' property and then returns a promise to controller.
+        dataService.edit = function (student) {
+            var defer = $q.defer();
+            // Delete $$hashKey property from student object before sending to Firebase.
+            var hashKeyProperty = ['$$hashKey'];
+            delete student[hashKeyProperty];
+            // Use updateObj to pass key reference to Firebase and avoid object property inception.
+            var updateObj = {};
+            updateObj['students/' + student.id] = student;
+            fb.ref().update(updateObj)
+                .then(
+                    function () {
+                        defer.resolve(dataService.student_array);
+                    },
+                    function () {
+                        // TODO: better error handling
+                        console.log('failed to EDIT student data');
+                        defer.reject('failed to EDIT student data');
+                    });
+            return defer.promise;
+        };
+
     })
 
+    // Create Bootstrap tooltip directive to be used on table cells
     .directive('tooltip', function () {
         return {
             restrict: 'A',
             link: function (scope, element) {
-                $(element).tooltip({title: "Hooray!", delay: {show: 1000, hide: 500}, animation: true});
+                $(element).tooltip({delay: {show: 1000, hide: 500}, animation: true});
             }
         };
     });
