@@ -20,8 +20,8 @@ angular.module('studentGradeTable', ['focus-if', 'ngAnimate'])
                     }
                 }
                 var result = total / (arr.length - countOfNaNs);
-                // Set color scale for grade average: 0 is grey, < 70 is red, < 85 is orange, >= 85 is green
-                ctrl.avgGradeColor = result >= 90 ? 'label-success'
+                ctrl.avgGradeColor = result === 'No grade' ? 'emptyClass'
+                    : result >= 90 ? 'label-success'
                     : result >= 80 ? 'label-info'
                     : result >= 70 ? 'label-warning'
                     : result >= 1 ? 'label-danger'
@@ -29,6 +29,19 @@ angular.module('studentGradeTable', ['focus-if', 'ngAnimate'])
                 return result;
             }
         }
+
+        // Set color scale for grade average.
+        // 'No grade' applies emptyClass styling.
+        // Less than 70 is red, 70-80 is orange, 80-90 is blue, over 90 is green.
+        ctrl.getGradeColor = function (grade) {
+            ctrl.gradeColor = grade === 'No grade' ? 'emptyClass'
+                : grade >= 90 ? 'label-success'
+                : grade >= 80 ? 'label-info'
+                : grade >= 70 ? 'label-warning'
+                : grade >= 1 ? 'label-danger'
+                : 'label-default';
+            return ctrl.gradeColor;
+        };
 
         // Set initial sort order and logic for orderBy param clicked
         ctrl.order = '-grade';

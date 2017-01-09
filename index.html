@@ -16,6 +16,17 @@
     <script src="https://rawgit.com/hiebj/ng-focus-if/master/focusIf.min.js"></script>
     <script src="script.js"></script>
     <style>
+        /*Minor tweaks*/
+        .smaller {
+            font-size: .8em;
+        }
+        .pull-down {
+            margin-top: 12px;
+        }
+        a:hover {
+            text-decoration: none;
+        }
+
         /*Table styles*/
         .fa-sort {
             color: lightgray;
@@ -52,10 +63,6 @@
             color: #f0ad4e;
             font-size: 12px;
             font-style: italic;
-        }
-
-        .smaller {
-            font-size: .8em;
         }
 
         /*Sorting animations*/
@@ -108,21 +115,19 @@
 <body ng-controller="mainCtrl as mc">
 <div class="container">
     <div class="page-header row">
-        <!-- non-mobile-view -->
-        <h1 class="hidden-xs">Mrs. Sturtz Kindergarten <small> &bullet; Russell Elementary</small>
-            <small class="pull-right">Grade Average
+        <h1 class="hidden-xs">Student Grade Table <small> &bullet; Developed by<a href="https://github.com/tsturtz"> Taylor Sturtz <i class="fa fa-github"></i></a></small>
+            <small class="pull-right pull-down">Grade Average:
                 <span class="label" ng-class="mc.avgGradeColor"> {{ mc.avgGrade.toFixed(2) }}</span>
             </small>
         </h1>
         <!-- mobile-view -->
         <h3 class="visible-xs col-xs-12 text-center">Student Grade Table<br>
-            <small>Grade Average
-                <span class="label" ng-class="mc.avgGradeColor">{{mc.avgGrade.toFixed(2)}}</span>
-            </small>
+            <small>Developed by <a href="#">Taylor Sturtz</a> <a href="https://github.com/tsturtz"><i class="fa fa-github"></i></a></small><br>
         </h3>
+        <!-- mobile-view -->
     </div>
     <div class="col-sm-3 well well-lg">
-        <h6>Filter Students by Name, Course, or Grade:</h6>
+        <h5>Filter by Name, Course, or Grade:</h5>
         <div class="input-group form-group">
             <span class="input-group-addon">
                 <span class="glyphicon glyphicon-search"></span>
@@ -134,7 +139,7 @@
         </div>
         <form role="form" autocomplete="off">
             <hr>
-            <h4>Add a New Student:</h4>
+            <h5>Add a New Student:</h5>
             <div class="input-group form-group">
                 <span class="input-group-addon">
                     <span class="glyphicon glyphicon-user"></span>
@@ -177,12 +182,17 @@
                 <a ng-click="mc.student = {}; filterInput = ''"
                    type="button"
                    class="btn btn-default outline col-md-4 col-md-offset-1">
-                    <!--<span class="glyphicon glyphicon-refresh"></span>-->
                     <small class="smaller">CLEAR</small>
                 </a>
             </div>
         </form>
     </div>
+    <!-- mobile-view -->
+    <h5 class="visible-xs text-center">Grade Average:
+        <span class="label" ng-class="mc.avgGradeColor">{{mc.avgGrade.toFixed(2)}}</span>
+        <hr>
+    </h5>
+    <!-- mobile-view -->
     <div class="container col-sm-9">
         <table class="table table-hover">
             <thead>
@@ -210,7 +220,8 @@
                            ng-model="updateName"
                            ng-blur="editName = false; mc.editStudent(student, 'name', updateName); focus = false"
                            focus-if="focus"
-                           ng-keypress="($event.which === 13) ? editName = false : editName = true">
+                           ng-keypress="($event.which === 13) ? editName = false : editName = true"
+                           onfocus="this.value = this.value;">
                 </td>
                 <td class="row-fluid" ng-click="editCourse = true; focus = true">
                     <span ng-hide="editCourse"
@@ -227,12 +238,13 @@
                            ng-model="updateCourse"
                            ng-blur="editCourse = false; mc.editStudent(student, 'course', updateCourse); focus = false"
                            focus-if="focus"
-                           ng-keypress="($event.which === 13) ? editCourse = false : editCourse = true">
+                           ng-keypress="($event.which === 13) ? editCourse = false : editCourse = true"
+                           onfocus="this.value = this.value;">
                 </td>
                 <td class="row-fluid" ng-click="editGrade = true; focus = true">
                     <span ng-hide="editGrade"
                           class="label"
-                          ng-class=" {'emptyClass' : student.grade === 'No grade', 'label-danger' : student.grade < 70, 'label-warning' : student.grade < 80, 'label-info' : student.grade < 90, 'label-success' : student.grade >= 90} "
+                          ng-class="mc.getGradeColor(student.grade)"
                           data-toggle="tooltip"
                           data-placement="right"
                           title="Click to edit"
@@ -245,9 +257,9 @@
                            ng-model="updateGrade"
                            ng-blur="editGrade = false; mc.editStudent(student, 'grade', updateGrade); focus = false"
                            focus-if="focus"
-                           ng-keypress="($event.which === 13) ? editGrade = false : editGrade = true">
+                           ng-keypress="($event.which === 13) ? editGrade = false : editGrade = true"
+                           onfocus="this.value = this.value;">
                 </td>
-                <!-- non-mobile-view -->
                 <td class="hidden-xs">
                     <a ng-click="mc.deleteStudent(student)" class="btn btn-danger outline">
                         <i class="fa fa-trash-o" aria-hidden="true"></i> <small class="smaller">DELETE</small>
@@ -259,6 +271,7 @@
                         <i class="fa fa-trash-o" aria-hidden="true"></i> Delete
                     </a>
                 </td>
+                <!-- mobile-view -->
             </tr>
             </tbody>
         </table>
