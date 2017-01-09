@@ -35,10 +35,10 @@
             width: 30%;
         }
         th:nth-child(2), td:nth-child(2) {
-            width: 40%
+            width: 45%
         }
         th:nth-child(3), td:nth-child(3) {
-            width: 25%;
+            width: 20%;
         }
         th:last-child, td:last-child {
             width: 10%;
@@ -47,23 +47,15 @@
             width: 100%;
         }
 
-        /*Classes for table data dynamic styling*/
+        /*Class for td with no data*/
         .emptyClass {
             color: #f0ad4e;
             font-size: 12px;
             font-style: italic;
         }
-        .succeeding {
-            color: #5cb85c;
-        }
-        .passing {
-            color: #5bc0de;
-        }
-        .barely-passing {
-            color: #f0ad4e;
-        }
-        .failing {
-            color: #d9534f;
+
+        .smaller {
+            font-size: .8em;
         }
 
         /*Sorting animations*/
@@ -108,7 +100,7 @@
         /*Mobile font size adjustment*/
         @media all and (max-width: 500px) {
             th, td {
-                font-size: 0.8em;
+                font-size: 0.7em;
             }
         }
     </style>
@@ -117,7 +109,7 @@
 <div class="container">
     <div class="page-header row">
         <!-- non-mobile-view -->
-        <h1 class="hidden-xs">Student Grade Table
+        <h1 class="hidden-xs">Mrs. Sturtz Kindergarten <small> &bullet; Russell Elementary</small>
             <small class="pull-right">Grade Average
                 <span class="label" ng-class="mc.avgGradeColor"> {{ mc.avgGrade.toFixed(2) }}</span>
             </small>
@@ -130,6 +122,7 @@
         </h3>
     </div>
     <div class="col-sm-3 well well-lg">
+        <h6>Filter Students by Name, Course, or Grade:</h6>
         <div class="input-group form-group">
             <span class="input-group-addon">
                 <span class="glyphicon glyphicon-search"></span>
@@ -137,7 +130,7 @@
             <input ng-model="filterInput"
                    type="text"
                    class="form-control"
-                   placeholder="Filter students">
+                   placeholder="Search">
         </div>
         <form role="form" autocomplete="off">
             <hr>
@@ -178,14 +171,14 @@
             <div>
                 <a ng-click="mc.addStudent()"
                    type="button"
-                   class="btn btn-primary col-md-8">
-                    <i class="fa fa-user-plus"></i>&nbsp; <small>ADD STUDENT</small>
+                   class="btn btn-primary col-md-7">
+                    <i class="fa fa-user-plus"></i>&nbsp; <small class="smaller">ADD STUDENT</small>
                 </a>
                 <a ng-click="mc.student = {}; filterInput = ''"
                    type="button"
-                   class="btn btn-default outline col-md-3 col-md-offset-1">
+                   class="btn btn-default outline col-md-4 col-md-offset-1">
                     <!--<span class="glyphicon glyphicon-refresh"></span>-->
-                    <small><small>CLEAR</small></small>
+                    <small class="smaller">CLEAR</small>
                 </a>
             </div>
         </form>
@@ -238,7 +231,8 @@
                 </td>
                 <td class="row-fluid" ng-click="editGrade = true; focus = true">
                     <span ng-hide="editGrade"
-                          ng-class=" {'emptyClass' : student.grade === 'No grade', 'failing' : student.grade < 70, 'barely-passing' : student.grade < 80, 'passing' : student.grade < 90, 'succeeding' : student.grade >= 90} "
+                          class="label"
+                          ng-class=" {'emptyClass' : student.grade === 'No grade', 'label-danger' : student.grade < 70, 'label-warning' : student.grade < 80, 'label-info' : student.grade < 90, 'label-success' : student.grade >= 90} "
                           data-toggle="tooltip"
                           data-placement="right"
                           title="Click to edit"
