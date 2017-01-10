@@ -23,7 +23,7 @@ angular.module('studentGradeTable')
                         $(element).popover('show');
                         $timeout(function () {
                             $(element).popover('hide');
-                        }, 3000);
+                        }, 2000);
                     }
                 });
             }

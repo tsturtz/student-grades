@@ -73,7 +73,8 @@
                        class="form-control"
                        name="studentName"
                        id="studentName"
-                       placeholder="Name">
+                       placeholder="Name"
+                       ng-keypress="($event.which === 13) && mc.addStudent(mc.student)">
             </div>
             <div class="input-group form-group">
                 <span class="input-group-addon">
@@ -84,7 +85,8 @@
                        class="form-control"
                        name="course"
                        id="course"
-                       placeholder="Course">
+                       placeholder="Course"
+                       ng-keypress="($event.which === 13) && mc.addStudent(mc.student)">
             </div>
             <div class="input-group form-group">
                 <span class="input-group-addon">
@@ -95,7 +97,8 @@
                        class="form-control"
                        name="studentGrade"
                        id="studentGrade"
-                       placeholder="Grade">
+                       placeholder="Grade"
+                       ng-keypress="($event.which === 13) && mc.addStudent(mc.student)">
             </div>
             <div>
                 <a ng-click="mc.addStudent(mc.student)"
@@ -105,7 +108,7 @@
                    data-toggle="popover"
                    data-trigger="focus"
                    data-placement="bottom"
-                   data-content="Please fill out all fields"
+                   data-content="Please enter all fields"
                    popover>
                     <i class="fa fa-user-plus"></i>&nbsp; <small class="smaller">ADD STUDENT</small>
                 </a>
