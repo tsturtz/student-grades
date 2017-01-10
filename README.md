@@ -11,7 +11,7 @@ A fully responsive grade-tracking bootstrap application originally developed in 
 - **Firebase** database
 
 ## Features:
-This application was built to provide instructors with the ability to *create*, *read*, *update*, and *delete* student records with ease, but also to go beyond with user experience in mind at every step of the way.
+This application was built to provide instructors with the ability to **create**, **read**, **update**, and **delete** student records from the database with ease, but also to go beyond with **user experience** in mind at every step of the way.
 
 - Users are able to **filter and sort** students by name, course, or grade instantaneously.
 - When adding a new student, **form validation** and popover notifications ensure proper user input.
