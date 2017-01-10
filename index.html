@@ -15,102 +15,6 @@
     <script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
     <script src="https://rawgit.com/hiebj/ng-focus-if/master/focusIf.min.js"></script>
     <script src="script.js"></script>
-    <style>
-        /*Minor tweaks*/
-        .smaller {
-            font-size: .8em;
-        }
-        .pull-down {
-            margin-top: 12px;
-        }
-        a:hover {
-            text-decoration: none;
-        }
-
-        /*Table styles*/
-        .fa-sort {
-            color: lightgray;
-        }
-        th {
-            cursor: pointer;
-        }
-        td {
-            cursor: default;
-        }
-        th, td {
-            padding-right: 0;
-            padding-left: 0;
-            vertical-align: middle !important;
-        }
-        th:first-child, td:first-child {
-            width: 30%;
-        }
-        th:nth-child(2), td:nth-child(2) {
-            width: 45%
-        }
-        th:nth-child(3), td:nth-child(3) {
-            width: 20%;
-        }
-        th:last-child, td:last-child {
-            width: 10%;
-        }
-        td > input[type='text'], td > input[type='number'] {
-            width: 100%;
-        }
-
-        /*Class for td with no data*/
-        .emptyClass {
-            color: #f0ad4e;
-            font-size: 12px;
-            font-style: italic;
-        }
-
-        /*Sorting animations*/
-        .ng-move {
-            -webkit-transition: all ease-in .7s;
-            transition: all ease-in .7s;
-            opacity: 0;
-        }
-        .ng-move.ng-move-active {
-            opacity: 1;
-        }
-
-        /*Bootstrap 'outline' buttons workaround*/
-        .outline {
-            background-color: transparent;
-            color: inherit;
-            transition: all .25s;
-        }
-        .btn-primary.outline {
-            color: #428bca;
-        }
-        .btn-success.outline {
-            color: #5cb85c;
-        }
-        .btn-info.outline {
-            color: #5bc0de;
-        }
-        .btn-warning.outline {
-            color: #f0ad4e;
-        }
-        .btn-danger.outline {
-            color: #d9534f;
-        }
-        .btn-primary.outline:hover,
-        .btn-success.outline:hover,
-        .btn-info.outline:hover,
-        .btn-warning.outline:hover,
-        .btn-danger.outline:hover {
-            color: #fff;
-        }
-
-        /*Mobile font size adjustment*/
-        @media all and (max-width: 500px) {
-            th, td {
-                font-size: 0.7em;
-            }
-        }
-    </style>
 </head>
 <body ng-controller="mainCtrl as mc">
 <div class="container">
@@ -174,9 +78,15 @@
                        placeholder="Student Grade">
             </div>
             <div>
-                <a ng-click="mc.addStudent()"
+                <a ng-click="mc.addStudent(mc.student)"
                    type="button"
-                   class="btn btn-primary col-md-7">
+                   class="btn btn-primary col-md-7"
+                   data-container="body"
+                   data-toggle="popover"
+                   data-trigger="focus"
+                   data-placement="bottom"
+                   data-content="Please fill out all fields"
+                   popover>
                     <i class="fa fa-user-plus"></i>&nbsp; <small class="smaller">ADD STUDENT</small>
                 </a>
                 <a ng-click="mc.student = {}; filterInput = ''"
