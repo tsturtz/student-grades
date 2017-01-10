@@ -1,6 +1,7 @@
 angular.module('studentGradeTable')
 
     .service('dataService', function ($http, $q) {
+        var dataService = this;
 
         // Initialize Firebase Database
         var config = {
@@ -14,7 +15,6 @@ angular.module('studentGradeTable')
         // Create reference to Firebase
         var fb = firebase.database();
 
-        var dataService = this;
         dataService.student_array = [];
 
         // Gets students array from Firebase and returns a promise

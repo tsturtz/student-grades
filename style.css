@@ -86,9 +86,17 @@ td > input[type='text'], td > input[type='number'] {
     color: #fff;
 }
 
-/*Mobile font size adjustment*/
 @media all and (max-width: 500px) {
+    /*Mobile font size adjustment*/
     th, td {
         font-size: 0.7em;
+    }
+
+    /*Bootstrap popover on mobile*/
+    .popover {
+        left: 50% !important;
+    }
+    .arrow {
+        top: 50% !important;
     }
 }
