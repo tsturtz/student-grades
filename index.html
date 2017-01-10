@@ -4,28 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1, user-scalable=no">
 
+    <!--CSS-->
+
+    <!--Bootstrap 3-->
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <!--Font Awesome-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!--Custom Styles-->
     <link rel="stylesheet" href="style.css">
 
+    <!--JS-->
+
+    <!--jQuery 3.1-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <!--Bootstrap 3-->
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <!--AngularJS 1.5-->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script>
+    <!--Angular Animate-->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-animate.js"></script>
+    <!--Firebase-->
     <script src="https://www.gstatic.com/firebasejs/3.6.4/firebase.js"></script>
+    <!--Input Focus on Render Directive-->
     <script src="https://rawgit.com/hiebj/ng-focus-if/master/focusIf.min.js"></script>
-    <script src="script.js"></script>
+    <!--Config Angular App-->
+    <script src="app.js"></script>
+    <!--Main Controller-->
+    <script src="mainCtrl.js"></script>
+    <!--Service-->
+    <script src="dataService.js"></script>
+    <!--Custom Directives-->
+    <script src="customDirectives.js"></script>
 </head>
 <body ng-controller="mainCtrl as mc">
 <div class="container">
     <div class="page-header row">
-        <h1 class="hidden-xs">Student Grade Table <small> &bullet; Developed by<a href="https://github.com/tsturtz"> Taylor Sturtz <i class="fa fa-github"></i></a></small>
+        <h1 class="hidden-xs hidden-sm">Student Grade Table <small> &bullet; Developed by<a href="https://github.com/tsturtz"> Taylor Sturtz <i class="fa fa-github"></i></a></small>
             <small class="pull-right pull-down">Grade Average:
                 <span class="label" ng-class="mc.avgGradeColor"> {{ mc.avgGrade.toFixed(2) }}</span>
             </small>
         </h1>
         <!-- mobile-view -->
-        <h3 class="visible-xs col-xs-12 text-center">Student Grade Table<br>
+        <h3 class="visible-xs visible-sm col-xs-12 text-center">Student Grade Table<br>
             <small>Developed by <a href="#">Taylor Sturtz</a> <a href="https://github.com/tsturtz"><i class="fa fa-github"></i></a></small><br>
         </h3>
         <!-- mobile-view -->
@@ -53,7 +73,7 @@
                        class="form-control"
                        name="studentName"
                        id="studentName"
-                       placeholder="Student Name">
+                       placeholder="Name">
             </div>
             <div class="input-group form-group">
                 <span class="input-group-addon">
@@ -64,7 +84,7 @@
                        class="form-control"
                        name="course"
                        id="course"
-                       placeholder="Student Course">
+                       placeholder="Course">
             </div>
             <div class="input-group form-group">
                 <span class="input-group-addon">
@@ -75,12 +95,12 @@
                        class="form-control"
                        name="studentGrade"
                        id="studentGrade"
-                       placeholder="Student Grade">
+                       placeholder="Grade">
             </div>
             <div>
                 <a ng-click="mc.addStudent(mc.student)"
                    type="button"
-                   class="btn btn-primary col-md-7"
+                   class="btn btn-primary col-md-12 col-lg-7"
                    data-container="body"
                    data-toggle="popover"
                    data-trigger="focus"
@@ -91,11 +111,16 @@
                 </a>
                 <a ng-click="mc.student = {}; filterInput = ''"
                    type="button"
-                   class="btn btn-default outline col-md-4 col-md-offset-1">
+                   class="btn btn-default outline hidden-xs hidden-sm hidden-md col-md-4 col-md-offset-1">
                     <small class="smaller">CLEAR</small>
                 </a>
             </div>
         </form>
+        <!-- mobile-view -->
+        <h5 class="visible-sm text-center"><hr>Grade Average:
+            <span class="label" ng-class="mc.avgGradeColor">{{mc.avgGrade.toFixed(2)}}</span>
+        </h5>
+        <!-- mobile-view -->
     </div>
     <!-- mobile-view -->
     <h5 class="visible-xs text-center">Grade Average:

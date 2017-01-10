@@ -1,0 +1,1 @@
+angular.module('studentGradeTable', ['focus-if', 'ngAnimate']);
