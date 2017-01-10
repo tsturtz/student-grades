@@ -63,7 +63,7 @@ angular.module('studentGradeTable')
         // Pass student object (from form inputs) to service to be added, then sync array, get grade average (updates DOM)
         ctrl.addStudent = function (student) {
             if (student !== undefined) {
-                if (student.name && student.course && student.grade) {
+                if (student.name && student.course && student.grade && student.grade >= 0 && student.grade <= 100) {
                     dataService.add(student)
                         .then(
                             function (response) {
