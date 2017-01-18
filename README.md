@@ -1,10 +1,10 @@
 # Student Grade Table
 
-![SGT](https://raw.githubusercontent.com/tsturtz/student-grades/v2.firebase/SGT-mock-sm.jpg)
-
 A fully responsive grade-tracking bootstrap application originally developed in core JavaScript & jQuery and refactored in AngularJS with a Firebase database.
 
 :zap: **[Live link](https://tsturtz.github.io/student-grades/)**
+
+![SGT](https://raw.githubusercontent.com/tsturtz/student-grades/v2.firebase/SGT-mock-sm.jpg)
 
 ## Key Technologies:
 - **HTML5** and **CSS3**
