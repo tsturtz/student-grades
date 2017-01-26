@@ -4,7 +4,7 @@ A fully responsive grade-tracking bootstrap application originally developed in 
 
 **[Live link](https://tsturtz.github.io/student-grades/)**
 
-![SGT](https://raw.githubusercontent.com/tsturtz/student-grades/v2.firebase/SGT-mock-sm.jpg)
+![SGT](http://taylorsturtz.com/images/StudentGradeTable-WebMock.jpg)
 
 ## Key Technologies:
 - **HTML5** and **CSS3**
