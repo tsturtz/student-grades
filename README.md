@@ -21,3 +21,9 @@ This application was built to provide instructors with the ability to **create**
 - Tooltips let users know that they can **edit-in-place** and press enter or simply click outside the input box to make changes on the fly to student records.
 - **Grade average calculations** and **color-scaled grading** make it easy to see how well students are doing.
 - A **fully responsive** layout creates great UX at every breakpoint.
+
+## Versions:
+- **v1.0** Bootstrap layout structure and basic CRUD functions
+- **v2.0** Full functionality with borrowed database
+- **v2.angular** Refactored in AngularJS
+- **v2.firebase** Added firebase database and much more functionality and polish
