@@ -51,7 +51,7 @@ angular.module('studentGradeTable')
             ctrl.order = orderBy === ctrl.ordered ? '-' + orderBy : orderBy;
             ctrl.ordered = ctrl.order;
         };
-
+        
         // Call service to get student data, then sync array and get grade average and update DOM
         dataService.get()
             .then(
@@ -78,12 +78,17 @@ angular.module('studentGradeTable')
 
         // Pass student object to service to be deleted, then sync array and get grade average (updates DOM)
         ctrl.deleteStudent = function (student) {
-            dataService.del(student)
-                .then(
-                    function (response) {
-                        ctrl.student_array = response;
-                        ctrl.avgGrade = getAvg(ctrl.student_array);
-                    });
+            // Confirm delete - if unconfirmed, do nothing
+            bootbox.confirm("Are you sure you want to delete this student?", function(result) {
+                if (result) {
+                    dataService.del(student)
+                        .then(
+                            function (response) {
+                                ctrl.student_array = response;
+                                ctrl.avgGrade = getAvg(ctrl.student_array);
+                            });
+                }
+            });
         };
 
         // Pass student object to service to be edited, then sync array and get grade average (updates DOM)
@@ -92,7 +97,7 @@ angular.module('studentGradeTable')
             if (update === null || update === '') {
                 update = prop === 'name' ? 'No name'
                     : prop === 'course' ? 'No course'
-                    : 'No grade'
+                    : 'No grade';
             }
             // Check if there is actually an update, if not, exit the function
             if (update === undefined) {
@@ -106,6 +111,15 @@ angular.module('studentGradeTable')
                         ctrl.student_array = response;
                         ctrl.avgGrade = getAvg(ctrl.student_array);
                     });
-        }
+        };
+
+        // Mouse hover IN apply editing icon
+        ctrl.hoverIn = function (student, prop) {
+            student[prop + 'Hovering'] = true;
+        };
+        // Mouse hover OUT remove editing icon
+        ctrl.hoverOut = function (student, prop) {
+            student[prop + 'Hovering'] = false;
+        };
 
     });
