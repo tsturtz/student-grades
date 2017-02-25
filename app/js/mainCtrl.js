@@ -92,7 +92,7 @@ angular.module('studentGradeTable')
             if (update === null || update === '') {
                 update = prop === 'name' ? 'No name'
                     : prop === 'course' ? 'No course'
-                    : 'No grade'
+                    : 'No grade';
             }
             // Check if there is actually an update, if not, exit the function
             if (update === undefined) {
@@ -106,6 +106,14 @@ angular.module('studentGradeTable')
                         ctrl.student_array = response;
                         ctrl.avgGrade = getAvg(ctrl.student_array);
                     });
+        };
+
+        ctrl.hoverIn = function (student, prop) {
+            student[prop + 'Hovering'] = true;
+        };
+
+        ctrl.hoverOut = function (student, prop) {
+            student[prop + 'Hovering'] = false;
         }
 
     });

@@ -5,7 +5,7 @@ angular.module('studentGradeTable')
         return {
             restrict: 'A',
             link: function (scope, element) {
-                $(element).tooltip({delay: {show: 1000, hide: 500}, animation: true});
+                $(element).tooltip({delay: {show: 1500, hide: 500}, animation: true});
             }
         };
     })
@@ -31,7 +31,7 @@ angular.module('studentGradeTable')
                     $(element).popover('show');
                     $timeout(function () {
                         $(element).popover('destroy');
-                    }, 2800)
+                    }, 2800);
                 }
             }
         };
@@ -58,7 +58,7 @@ angular.module('studentGradeTable')
                     $(element).popover('show');
                     $timeout(function () {
                         $(element).popover('destroy');
-                    }, 2900)
+                    }, 2900);
                 }
             }
         };
@@ -91,7 +91,7 @@ angular.module('studentGradeTable')
                     }
                     $timeout(function () {
                         $(element).popover('destroy');
-                    }, 3000)
+                    }, 3000);
                 }
             }
         };
