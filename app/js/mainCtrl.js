@@ -51,13 +51,15 @@ angular.module('studentGradeTable')
             ctrl.order = orderBy === ctrl.ordered ? '-' + orderBy : orderBy;
             ctrl.ordered = ctrl.order;
         };
-        
+
+        ctrl.spinActive = true;
         // Call service to get student data, then sync array and get grade average and update DOM
         dataService.get()
             .then(
                 function (response) {
                     ctrl.student_array = response;
                     ctrl.avgGrade = getAvg(ctrl.student_array);
+                    ctrl.spinActive = false;
                 });
 
         // Pass student object (from form inputs) to service to be added, then sync array, get grade average (updates DOM)
@@ -79,14 +81,29 @@ angular.module('studentGradeTable')
         // Pass student object to service to be deleted, then sync array and get grade average (updates DOM)
         ctrl.deleteStudent = function (student) {
             // Confirm delete - if unconfirmed, do nothing
-            bootbox.confirm("Are you sure you want to delete this student?", function(result) {
-                if (result) {
-                    dataService.del(student)
-                        .then(
-                            function (response) {
-                                ctrl.student_array = response;
-                                ctrl.avgGrade = getAvg(ctrl.student_array);
-                            });
+            bootbox.confirm({
+
+                title: 'Are you sure?',
+                message: ('Do you really want to delete <strong class="text-danger">' + student.name + '?</strong> This cannot be undone.'),
+                buttons: {
+                    cancel: {
+                        label: '<i class="fa fa-times"></i> Cancel'
+                    },
+                    confirm: {
+                        label: '<i class="fa fa-trash-o"></i> Delete',
+                        className: 'btn-danger'
+                    }
+                },
+                callback: function (result) {
+                    // If confirmed, delete student from database
+                    if (result) {
+                        dataService.del(student)
+                            .then(
+                                function (response) {
+                                    ctrl.student_array = response;
+                                    ctrl.avgGrade = getAvg(ctrl.student_array);
+                                });
+                    }
                 }
             });
         };
