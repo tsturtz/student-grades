@@ -1,6 +1,6 @@
 angular.module('studentGradeTable')
 
-    .controller('mainCtrl', function (dataService) {
+    .controller('mainCtrl', function (dataService, $timeout) {
         var ctrl = this;
 
         // Calculate grade average
@@ -62,7 +62,7 @@ angular.module('studentGradeTable')
                     ctrl.spinActive = false;
                 });
 
-        // Pass student object (from form inputs) to service to be added, then sync array, get grade average (updates DOM)
+        // Pass student object (from form inputs) to service to be added, then sync array, get grade average (updates DOM), alert user
         ctrl.addStudent = function (student) {
             if (student !== undefined) {
                 if (student.name && student.course && (student.grade === 0 || student.grade) && student.grade >= 0 && student.grade <= 100) {
@@ -71,6 +71,11 @@ angular.module('studentGradeTable')
                             function (response) {
                                 ctrl.student_array = response;
                                 ctrl.avgGrade = getAvg(ctrl.student_array);
+                                bootbox.alert({
+                                    size: 'small',
+                                    message: ('<strong>' + student.name + '</strong> was added!'),
+                                    backdrop: true
+                                });
                             });
                     // Clear form inputs
                     ctrl.student = {};
@@ -82,9 +87,8 @@ angular.module('studentGradeTable')
         ctrl.deleteStudent = function (student) {
             // Confirm delete - if unconfirmed, do nothing
             bootbox.confirm({
-
                 title: 'Are you sure?',
-                message: ('Do you really want to delete <strong class="text-danger">' + student.name + '?</strong> This cannot be undone.'),
+                message: ('Do you really want to delete student: <strong class="text-danger">' + student.name + '</strong> ? This cannot be undone.'),
                 buttons: {
                     cancel: {
                         label: '<i class="fa fa-times"></i> Cancel'
@@ -102,7 +106,16 @@ angular.module('studentGradeTable')
                                 function (response) {
                                     ctrl.student_array = response;
                                     ctrl.avgGrade = getAvg(ctrl.student_array);
-                                });
+                                    // Alert user that student was deleted
+                                    $timeout(function () {
+                                        bootbox.alert({
+                                            size: 'small',
+                                            message: ('<strong class="text-danger">' + student.name + '</strong> was deleted.'),
+                                            backdrop: true
+                                        });
+                                    }, 500);
+                                }
+                            );
                     }
                 }
             });
